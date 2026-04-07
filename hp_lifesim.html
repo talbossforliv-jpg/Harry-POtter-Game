@@ -1,0 +1,1972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harry Potter: A Wizarding Life</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+
+:root {
+  --ink:#1a1410;--ink2:#3d3028;--ink3:#6b5a4e;
+  --parchment:#f7f2e8;--parchment2:#efe8d5;--parchment3:#e5d9c0;--parchment4:#ddd0b0;
+  --gold:#b8860b;--gold2:#d4a017;--gold3:#f0c040;
+  --red:#8b1a1a;--green:#1a4a2e;--blue:#1a2a4a;
+  --border:#c4a882;--border2:#a08060;
+  --gryf:#8b1a1a;--slyth:#1a4a2e;--raven:#1a2a4a;--huff:#5a4a00;
+  --danger:#c0392b;--success:#1a5c2e;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+body{
+  background:radial-gradient(ellipse at top,#1a0f08 0%,#0d0806 100%);
+  min-height:100vh;display:flex;align-items:flex-start;justify-content:center;
+  padding:1.5rem 1rem 3rem;
+  font-family:'EB Garamond',Georgia,serif;
+  background-attachment:fixed;
+}
+
+#app{width:100%;max-width:760px}
+
+/* ── PAGE ── */
+.page{
+  background:var(--parchment);
+  border:1px solid var(--border);border-radius:4px;
+  padding:2rem 1.75rem;margin-bottom:1rem;
+  position:relative;overflow:hidden;
+  animation:fadeIn 0.3s ease;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.page::before{
+  content:'';position:absolute;top:6px;left:6px;right:6px;bottom:6px;
+  border:0.5px solid var(--border2);pointer-events:none;border-radius:2px;
+}
+
+/* ── TYPOGRAPHY ── */
+.eyebrow{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink3);margin-bottom:.4rem}
+.title{font-family:'Cinzel',serif;font-size:20px;font-weight:600;color:var(--ink);margin-bottom:1.25rem;line-height:1.3;border-bottom:1px solid var(--border);padding-bottom:.65rem}
+.prose{font-size:16px;line-height:1.95;color:var(--ink);margin-bottom:1rem}
+.prose em{font-style:italic}.prose strong{font-weight:600}
+.indent{text-indent:2em}
+.scene-break{text-align:center;color:var(--ink3);margin:1.2rem 0;font-size:13px;letter-spacing:.3em}
+
+/* ── DIALOGUE ── */
+.dialogue{
+  background:var(--parchment2);border:1px solid var(--border);
+  border-left:3px solid var(--gold);border-radius:0 3px 3px 0;
+  padding:.7rem 1rem;margin:.85rem 0;font-size:15px;line-height:1.75;
+  color:var(--ink);font-style:italic;
+}
+.speaker{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-style:normal;display:block;margin-bottom:3px}
+
+/* ── CHOICES ── */
+.q-label{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin:.9rem 0 .3rem}
+.question{font-size:15px;font-weight:500;color:var(--ink);margin-bottom:.6rem;line-height:1.5}
+.choices{display:flex;flex-direction:column;gap:7px;margin-bottom:1rem}
+.choice{
+  background:var(--parchment2);border:1px solid var(--border);border-radius:3px;
+  padding:.65rem .9rem;font-family:'EB Garamond',serif;font-size:15px;
+  color:var(--ink);cursor:pointer;text-align:left;line-height:1.6;
+  transition:all .15s;width:100%;
+}
+.choice:hover{background:var(--parchment3);border-color:var(--gold);transform:translateX(2px)}
+.choice:active{transform:scale(.99)}
+.choice-letter{font-family:'Cinzel',serif;font-size:10px;font-weight:600;color:var(--gold);display:block;margin-bottom:2px;letter-spacing:.05em}
+
+/* ── BUTTONS ── */
+.btn{background:var(--ink);color:var(--parchment);border:none;border-radius:3px;padding:.6rem 1.4rem;font-family:'Cinzel',serif;font-size:12px;letter-spacing:.1em;cursor:pointer;transition:background .15s}
+.btn:hover{background:var(--ink2)}
+.btn-gold{background:var(--gold);color:#fff1cc}
+.btn-gold:hover{background:var(--gold2)}
+.btn-wide{width:100%;margin-top:.75rem;padding:.75rem}
+
+/* ── HUD ── */
+.hud{
+  background:linear-gradient(135deg,#1a0f08,#2a1810);
+  border:1px solid var(--border2);border-radius:4px;
+  padding:1rem;margin-bottom:1rem;
+  display:grid;grid-template-columns:1fr 1fr;gap:.75rem;
+}
+.hud-section{display:flex;flex-direction:column;gap:4px}
+.hud-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:#8a7060;margin-bottom:3px}
+.stat-row{display:flex;align-items:center;gap:8px;margin-bottom:3px}
+.stat-name{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.05em;color:#c0a080;width:72px;flex-shrink:0}
+.stat-track{flex:1;height:4px;background:#3a2820;border-radius:2px;overflow:hidden}
+.stat-fill{height:100%;border-radius:2px;transition:width .5s ease}
+.stat-val{font-family:'Cinzel',serif;font-size:10px;color:#a08060;width:24px;text-align:right;flex-shrink:0}
+
+/* ── RELATIONSHIP PANEL ── */
+.rel-panel{
+  background:var(--parchment2);border:1px solid var(--border);
+  border-radius:3px;padding:.85rem;margin-bottom:1rem;
+}
+.rel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px}
+.rel-card{
+  background:var(--parchment);border:1px solid var(--border);
+  border-radius:3px;padding:.5rem .65rem;
+}
+.rel-name{font-family:'Cinzel',serif;font-size:10px;color:var(--ink2);margin-bottom:3px}
+.rel-hearts{font-size:12px;letter-spacing:1px}
+.rel-status{font-size:11px;color:var(--ink3);font-style:italic}
+
+/* ── ACTIVITY PANEL ── */
+.activity-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem}
+.activity-btn{
+  background:var(--parchment2);border:1px solid var(--border);
+  border-radius:3px;padding:.75rem;cursor:pointer;text-align:left;
+  transition:all .15s;font-family:'EB Garamond',serif;
+}
+.activity-btn:hover{background:var(--parchment3);border-color:var(--gold);transform:translateY(-1px)}
+.activity-btn.used{opacity:.5;pointer-events:none}
+.act-icon{font-size:20px;display:block;margin-bottom:4px}
+.act-name{font-family:'Cinzel',serif;font-size:11px;color:var(--gold);display:block;margin-bottom:2px}
+.act-desc{font-size:13px;color:var(--ink3);line-height:1.4}
+
+/* ── BADGES ── */
+.badge{display:inline-block;font-family:'Cinzel',serif;font-size:10px;font-weight:500;padding:2px 9px;border-radius:2px;letter-spacing:.05em}
+.badge-gryf{background:var(--gryf);color:#ffd700}
+.badge-slyth{background:var(--slyth);color:#c0c0c0}
+.badge-raven{background:var(--raven);color:#c0a060}
+.badge-huff{background:var(--huff);color:#ffd700}
+.badge-dark{background:#2a1f30;color:#c0a0d0}
+.badge-good{background:#1a3a1a;color:#80d080}
+
+/* ── LOG ── */
+.log-panel{border:1px solid var(--border);border-radius:3px;overflow:hidden;margin-bottom:1rem}
+.log-header{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink3);padding:.4rem .85rem;background:var(--parchment2);border-bottom:1px solid var(--border)}
+.log-entry{padding:6px .85rem;border-bottom:1px solid var(--border);display:flex;gap:10px;font-size:13px;color:var(--ink2);line-height:1.5}
+.log-entry:last-child{border-bottom:none}
+.log-age{font-family:'Cinzel',serif;font-size:10px;color:var(--ink3);flex-shrink:0;padding-top:1px;min-width:40px}
+
+/* ── NOTIFICATION ── */
+.notif{
+  position:fixed;top:1rem;right:1rem;z-index:999;
+  background:var(--ink);color:var(--parchment);
+  border:1px solid var(--gold);border-radius:4px;
+  padding:.6rem 1rem;font-family:'EB Garamond',serif;font-size:14px;
+  max-width:260px;line-height:1.5;
+  animation:slideIn .3s ease,fadeOut .3s ease 2.7s forwards;
+  pointer-events:none;
+}
+@keyframes slideIn{from{transform:translateX(120%)}to{transform:none}}
+@keyframes fadeOut{to{opacity:0;transform:translateX(120%)}}
+
+/* ── PROGRESS ── */
+.prog-bar{display:flex;gap:3px;margin-bottom:1.25rem}
+.prog-seg{height:3px;flex:1;background:var(--parchment3);border-radius:2px}
+.prog-seg.done{background:var(--gold)}
+.prog-seg.cur{background:var(--gold3)}
+
+/* ── SPELLS ── */
+.spell-list{display:flex;flex-wrap:wrap;gap:5px;margin:.5rem 0}
+.spell{background:var(--parchment3);border:1px solid var(--border2);border-radius:20px;padding:2px 10px;font-size:12px;font-style:italic;color:var(--ink2)}
+
+/* ── REVEAL ── */
+.reveal-box{text-align:center;padding:1.5rem 1rem;margin:1rem 0}
+.reveal-big{font-family:'Cinzel',serif;font-size:40px;font-weight:600;color:var(--ink);display:block;margin:.5rem 0}
+.reveal-sub{font-size:16px;font-style:italic;color:var(--ink3)}
+
+/* ── SCORE ── */
+.score-ring{text-align:center;padding:1.5rem 0;border-bottom:1px solid var(--border);margin-bottom:1.5rem}
+.score-num{font-family:'Cinzel',serif;font-size:72px;font-weight:700;color:var(--ink);display:block;line-height:1}
+.score-title{font-size:17px;font-style:italic;color:var(--ink2);margin:.5rem 0 1rem}
+
+/* ── MISC ── */
+.divider{border:none;border-top:1px solid var(--border);margin:1.25rem 0}
+.italic{font-style:italic}
+.gold-text{color:var(--gold)}
+.small{font-size:13px;color:var(--ink3)}
+.center{text-align:center}
+.tag{display:inline-block;font-family:'Cinzel',serif;font-size:10px;padding:2px 8px;border-radius:2px;margin:2px}
+.tag-good{background:#d4edda;color:#155724}
+.tag-bad{background:#f8d7da;color:#721c24}
+.tag-neutral{background:var(--parchment3);color:var(--ink3)}
+.action-result{
+  background:var(--parchment2);border:1px solid var(--border);border-left:3px solid var(--gold2);
+  border-radius:0 3px 3px 0;padding:.65rem 1rem;margin:.75rem 0;
+  font-size:14px;line-height:1.65;color:var(--ink2);
+}
+
+/* ── WAND ── */
+.wand-opt{background:var(--parchment2);border:1px solid var(--border);border-radius:3px;padding:.7rem;margin-bottom:5px;cursor:pointer;transition:all .12s;width:100%;text-align:left;font-family:'EB Garamond',serif}
+.wand-opt:hover{background:var(--parchment3);border-color:var(--gold)}
+.wand-name{font-family:'Cinzel',serif;font-size:11px;font-weight:600;color:var(--gold);display:block;margin-bottom:2px}
+.wand-desc{font-size:13px;color:var(--ink2);line-height:1.45}
+
+/* mobile */
+@media(max-width:500px){
+  .activity-grid{grid-template-columns:1fr}
+  .rel-grid{grid-template-columns:1fr 1fr}
+  .hud{grid-template-columns:1fr}
+  .page{padding:1.5rem 1.25rem}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const app = () => $('app');
+const rnd = arr => arr[Math.floor(Math.random()*arr.length)];
+const cl = (v,mn,mx) => Math.min(mx,Math.max(mn,Math.round(v)));
+
+function render(html){ app().innerHTML = html; window.scrollTo(0,0); }
+
+/* ===== GAME STATE ===== */
+let G = {};
+
+function initGame(){
+  G = {
+    age: 0, year: 0,
+    stats:{courage:35,wisdom:22,magic:30,cunning:18,loyalty:32,reputation:20,quidditch:25,academic:20},
+    rel:{ron:0,hermione:0,neville:0,ginny:0,luna:0,cho:0,fred:0,george:0,hagrid:40,dumbledore:30,snape:-20,draco:-30,sirius:0,cedric:0,dobby:10,voldemort:-100},
+    romance:null,romanceLevel:0,
+    spells:['Wingardium Leviosa','Lumos'],
+    log:[],
+    housePoints:0,
+    dark:0,good:0,
+    freeActions:3,freeUsed:0,
+    horcruxes:0,
+    quidditch:true,
+    quidditchWins:0,
+    patronus:'Stag',
+    deluminator:false,
+    phase:'intro',
+    sceneQ:[],
+    year1events:{potions:false,troll:false,stone:false},
+    detentions:0,
+    duelWins:0,
+    obedient:false,
+    daActive:false,
+    owlGrades:{},
+  };
+}
+
+/* ===== HELPERS ===== */
+function mut(obj){
+  for(const[k,v]of Object.entries(obj)){
+    if(G.stats[k]!==undefined) G.stats[k]=cl(G.stats[k]+v,0,100);
+    else if(G.rel[k]!==undefined) G.rel[k]=cl(G.rel[k]+v,-100,100);
+  }
+}
+
+function addLog(age,txt){ G.log.unshift({age,txt}); }
+
+function notify(msg,dur=3000){
+  const n=document.createElement('div');
+  n.className='notif'; n.innerHTML=msg;
+  document.body.appendChild(n);
+  setTimeout(()=>n.remove(),dur+300);
+}
+
+function relHeart(v){
+  if(v<-50) return '<span style="color:#c00">✦✦ Enemy</span>';
+  if(v<-20) return '<span style="color:#c00">✦ Rival</span>';
+  if(v<10)  return '<span style="color:#888">◇ Acquaintance</span>';
+  if(v<30)  return '<span style="color:#888">◆ Friendly</span>';
+  if(v<55)  return '<span style="color:var(--gold)">♥ Friend</span>';
+  if(v<75)  return '<span style="color:var(--gold)">♥♥ Close</span>';
+  if(v<90)  return '<span style="color:var(--gold)">♥♥♥ Best Friend</span>';
+  return '<span style="color:#d4305a">♥♥♥♥ Beloved</span>';
+}
+
+function relPanel(chars){
+  const names={ron:'Ron Weasley',hermione:'Hermione Granger',neville:'Neville Longbottom',ginny:'Ginny Weasley',luna:'Luna Lovegood',cho:'Cho Chang',fred:'Fred Weasley',george:'George Weasley',hagrid:'Hagrid',dumbledore:'Dumbledore',snape:'Snape',draco:'Draco Malfoy',sirius:'Sirius Black',cedric:'Cedric Diggory',dobby:'Dobby'};
+  const show=chars||Object.keys(G.rel).filter(k=>k!=='voldemort'&&(Math.abs(G.rel[k])>5||['ron','hermione','hagrid','dumbledore'].includes(k)));
+  return `<div class="rel-panel">
+    <div class="eyebrow" style="margin-bottom:.5rem">Relationships</div>
+    <div class="rel-grid">${show.map(k=>`
+      <div class="rel-card">
+        <div class="rel-name">${names[k]||k}</div>
+        <div class="rel-status">${relHeart(G.rel[k])}</div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function statBars(){
+  const cols={courage:'#8b1a1a',wisdom:'#1a2a4a',magic:'#4a1a6a',cunning:'#1a4a2e',loyalty:'#b8860b',quidditch:'#c05000',academic:'#1a3a5a'};
+  return Object.entries(G.stats).filter(([k])=>k!=='reputation').map(([k,v])=>`
+    <div class="stat-row">
+      <span class="stat-name">${k.charAt(0).toUpperCase()+k.slice(1)}</span>
+      <div class="stat-track"><div class="stat-fill" style="width:${v}%;background:${cols[k]||'#888'}"></div></div>
+      <span class="stat-val">${v}</span>
+    </div>`).join('');
+}
+
+function hud(){
+  return `<div class="hud">
+    <div class="hud-section">
+      <div class="hud-label">Harry Potter — Year ${G.year}, Age ${G.age}</div>
+      ${statBars()}
+    </div>
+    <div class="hud-section">
+      <div class="hud-label">Status</div>
+      <div style="font-size:12px;color:#c0a080;line-height:1.9">
+        <span class="badge badge-gryf">Gryffindor</span><br>
+        🦅 Seeker · ${G.quidditchWins} wins<br>
+        ✦ House pts: ${G.housePoints}<br>
+        ${G.patronus?`🌟 Patronus: ${G.patronus}`:''}
+        ${G.romance?`<br>💗 ${G.romance==='cho'?'Cho Chang':'Ginny Weasley'}`:''}
+      </div>
+      <div class="hud-label" style="margin-top:.5rem">Spells Known</div>
+      <div class="spell-list">${G.spells.map(s=>`<span class="spell">${s}</span>`).join('')}</div>
+    </div>
+  </div>`;
+}
+
+function logPanel(max){
+  if(!G.log.length)return'';
+  return`<div class="log-panel">
+    <div class="log-header">The Chronicles of Harry Potter</div>
+    ${G.log.slice(0,max||6).map(e=>`<div class="log-entry"><span class="log-age">Age ${e.age}</span><span>${e.txt}</span></div>`).join('')}
+  </div>`;
+}
+
+function prog(cur,tot){
+  return`<div class="prog-bar">${Array.from({length:tot},(_,i)=>`<div class="prog-seg ${i<cur?'done':i===cur?'cur':''}"></div>`).join('')}</div>`;
+}
+
+function page(eyebrow,title,body){
+  render(`<div class="page">
+    <div class="eyebrow">${eyebrow}</div>
+    <div class="title">${title}</div>
+    ${body}
+  </div>`);
+}
+
+function dlg(speaker,text){
+  return`<div class="dialogue"><span class="speaker">${speaker}</span>${text}</div>`;
+}
+
+function ch(arr,fn,q){
+  return`${q?`<div class="q-label">Your choice</div><p class="question">${q}</p>`:''}
+  <div class="choices">${arr.map((c,i)=>`
+    <button class="choice" onclick="${fn}(${i})">
+      <span class="choice-letter">${String.fromCharCode(65+i)}</span>${c}
+    </button>`).join('')}
+  </div>`;
+}
+
+/* ===== FREE TIME ===== */
+function freeTime(nextFn, yearNum){
+  G.freeUsed=0;
+  const actions=3;
+  renderFreeTime(nextFn,yearNum,actions);
+}
+
+function renderFreeTime(nextFn,yearNum,total){
+  const remaining=total-G.freeUsed;
+
+  const activities=[
+    {id:'ron',icon:'🎮',name:'Hang out with Ron',desc:'Chess, Exploding Snap, or Quidditch talk.',
+     fn:()=>{mut({ron:15,loyalty:5});addLog(G.age,'Spent the afternoon with Ron. You beat him at Exploding Snap — barely.');notify('♥ Ron is delighted!');}},
+    {id:'hermione',icon:'📚',name:'Study with Hermione',desc:'She drills you on spells and theory.',
+     fn:()=>{mut({hermione:12,academic:8,wisdom:5});addLog(G.age,'Hermione corrected your wand grip for forty minutes. Your grades quietly improved.');notify('📚 Academic +8, Hermione +12');}},
+    {id:'hagrid',icon:'🫖',name:'Visit Hagrid',desc:'Tea, treacle fudge, and questionable creatures.',
+     fn:()=>{mut({hagrid:10,courage:3,loyalty:4});addLog(G.age,'Hagrid showed you something that was almost certainly illegal. You had an excellent afternoon.');notify('♥ Hagrid loves the company!');}},
+    {id:'quidditch',icon:'🧹',name:'Quidditch practice',desc:'Extra laps, Snitch drills, conditioning.',
+     fn:()=>{mut({quidditch:10,courage:5});addLog(G.age,'Stayed late on the pitch practising. Wood gave you a reluctant nod of approval.');notify('🧹 Quidditch +10');}},
+    {id:'explore',icon:'🗺️',name:'Explore the castle',desc:'Discover hidden rooms, secret passages.',
+     fn:()=>{
+       const finds=['You found a shortcut behind the one-eyed witch hump.','You discovered a room full of chamber pots on the fifth floor. Useful, somehow.','A portrait of a particularly grumpy alchemist told you something interesting about Alchemy.','You found a mirror that shows the same room from a slightly different angle. Odd.'];
+       mut({cunning:7,wisdom:5,magic:3});addLog(G.age,rnd(finds));notify('🗺️ Cunning +7, discovered something!');}},
+    {id:'library',icon:'📖',name:'Research in the library',desc:'Pore over restricted and unrestricted sections.',
+     fn:()=>{mut({academic:10,wisdom:8});
+       const sp=['Alohomora','Accio','Reparo','Episkey','Finite Incantatem'];
+       const learn=sp.filter(s=>!G.spells.includes(s));
+       if(learn.length){const s=learn[0];G.spells.push(s);notify(`✨ Learned: ${s}`);}
+       else notify('📖 Wisdom +8, Academic +10');
+       addLog(G.age,'Spent hours in the library. Madam Pince asked you to stop breathing so loudly.');}},
+    {id:'duel',icon:'⚡',name:'Practice duelling',desc:'Find a willing partner and work on combat spells.',
+     fn:()=>{mut({magic:8,courage:7});G.duelWins++;addLog(G.age,`Duelling practice. You won ${G.duelWins} out of ${G.duelWins} practice bouts against Neville.`);notify('⚡ Magic +8, Courage +7');}},
+    {id:'ginny',icon:'💐',name:'Talk to Ginny',desc:'She is funnier and braver than you expected.',
+     fn:()=>{mut({ginny:18,loyalty:4});addLog(G.age,'Had a long conversation with Ginny. She makes you laugh more than most people.');notify('💗 Ginny +18');}},
+    {id:'neville',icon:'🌿',name:'Help Neville in Herbology',desc:'He is better at this than anyone credits him.',
+     fn:()=>{mut({neville:15,loyalty:6,academic:4});addLog(G.age,'Helped Neville repot Mandrakes. He is extraordinarily patient and secretly brilliant.');notify('♥ Neville +15');}},
+    {id:'write',icon:'✉️',name:'Write to Sirius',desc:'Letters by owl. He always writes back.',
+     fn:()=>{mut({sirius:cl(G.rel.sirius+0,0,100)>0?10:15,courage:4});G.rel.sirius=cl(G.rel.sirius+15,-100,100);addLog(G.age,'Wrote to Sirius. His reply arrived smelling of bonfires and was exactly what you needed to hear.');notify('✉️ Sirius +15');}},
+    {id:'fred',icon:'🎆',name:'Test Fred & George\'s products',desc:'Weasleys\' Wizard Wheezes in progress.',
+     fn:()=>{mut({fred:12,george:12,cunning:5,courage:3});addLog(G.age,'Fred and George needed a test subject. You obliged. The results were spectacular and slightly alarming.');notify('💣 Fred +12, George +12');}},
+    {id:'luna',icon:'🌙',name:'Walk with Luna',desc:'She sees things that others miss entirely.',
+     fn:()=>{mut({luna:15,wisdom:8});addLog(G.age,'Walked with Luna. She said something that made no sense and then turned out to be completely true.');notify('🌙 Luna +15, Wisdom +8');}},
+  ];
+
+  // Filter relevant activities by year
+  const avail=activities.filter(a=>{
+    if(a.id==='sirius'&&G.rel.sirius===-100)return false;
+    if(a.id==='luna'&&G.year<5)return false;
+    if(a.id==='write'&&G.year<3)return false;
+    return true;
+  }).slice(0,8);
+
+  const usedIds=G._ftUsed||[];
+
+  page(`Year ${G.year} — Free Time`,`What do you do with your time?`,
+    `${hud()}
+    <p class="prose">Between the major events of the year, there is time — not unlimited, but real. <strong>${remaining} action${remaining===1?'':'s'} remaining</strong> before the next chapter begins.</p>
+    <div class="activity-grid">
+    ${avail.map(a=>`
+      <button class="activity-btn ${usedIds.includes(a.id)?'used':''}" onclick="doActivity('${a.id}','${nextFn}',${yearNum})">
+        <span class="act-icon">${a.icon}</span>
+        <span class="act-name">${a.name}</span>
+        <span class="act-desc">${a.desc}</span>
+      </button>`).join('')}
+    </div>
+    ${remaining===0?`<button class="btn btn-wide" onclick="${nextFn}()">Continue the story →</button>`:''}
+    ${logPanel(4)}`
+  );
+}
+
+function doActivity(id,nextFn,yearNum){
+  if(!G._ftUsed)G._ftUsed=[];
+  if(G._ftUsed.includes(id))return;
+  G._ftUsed.push(id);
+  G.freeUsed++;
+
+  const total=3;
+  const activities={
+    ron:()=>{mut({ron:15,loyalty:5});addLog(G.age,'Spent the afternoon with Ron. Beat him at Exploding Snap — barely.');notify('♥ Ron +15')},
+    hermione:()=>{mut({hermione:12,academic:8,wisdom:5});addLog(G.age,'Hermione corrected your wand grip for forty minutes. Your grades quietly improved.');notify('📚 Academic +8')},
+    hagrid:()=>{mut({hagrid:10,courage:3,loyalty:4});addLog(G.age,'Hagrid showed you something probably illegal. Excellent afternoon.');notify('♥ Hagrid +10')},
+    quidditch:()=>{mut({quidditch:10,courage:5});addLog(G.age,'Extra Quidditch practice. Wood gave you a reluctant nod.');notify('🧹 Quidditch +10')},
+    explore:()=>{const f=['Found a shortcut behind the one-eyed witch.','A secret room on the fifth floor. Suspicious.','An alchemist portrait told you something useful.','A mirror that shows a slightly different room.'];mut({cunning:7,wisdom:5});addLog(G.age,rnd(f));notify('🗺️ Cunning +7')},
+    library:()=>{mut({academic:10,wisdom:8});const sp=['Alohomora','Accio','Reparo','Episkey','Finite Incantatem','Protego','Reducto'];const learn=sp.filter(s=>!G.spells.includes(s));if(learn.length){G.spells.push(learn[0]);notify(`✨ Learned: ${learn[0]}`);}else notify('📖 Wisdom +8');addLog(G.age,'Hours in the library. Madam Pince asked you to stop breathing so loudly.')},
+    duel:()=>{mut({magic:8,courage:7});G.duelWins++;addLog(G.age,`Duelling practice. ${G.duelWins} wins.`);notify('⚡ Magic +8')},
+    ginny:()=>{mut({ginny:18,loyalty:4});addLog(G.age,'Long conversation with Ginny. She makes you laugh more than most people.');notify('💗 Ginny +18')},
+    neville:()=>{mut({neville:15,loyalty:6,academic:4});addLog(G.age,'Helped Neville with Mandrakes. He is secretly brilliant.');notify('♥ Neville +15')},
+    write:()=>{G.rel.sirius=cl(G.rel.sirius+15,-100,100);addLog(G.age,'Wrote to Sirius. His reply smelled of bonfires and said exactly the right thing.');notify('✉️ Sirius +15')},
+    fred:()=>{mut({fred:12,george:12,cunning:5});addLog(G.age,'Tested Weasley products. Spectacular and alarming.');notify('💣 Fred +12, George +12')},
+    luna:()=>{mut({luna:15,wisdom:8});addLog(G.age,'Luna said something that made no sense and turned out to be true.');notify('🌙 Luna +15')},
+  };
+
+  if(activities[id])activities[id]();
+
+  const remaining=total-G.freeUsed;
+  renderFreeTime(nextFn,yearNum,total);
+}
+
+/* ===== INTRO ===== */
+function phaseIntro(){
+  G.phase='intro';
+  page('Begin','Harry Potter: A Wizarding Life',
+    `<p class="prose">The cupboard under the stairs at Number Four, Privet Drive, Little Whinging, Surrey. A boy sleeps on a camp bed surrounded by spiders and the faint smell of old wood. The boy has a thin face, knobbly knees, jet-black hair and bottle-thick glasses. On his forehead, even in the dark, a scar in the shape of a lightning bolt.</p>
+    <p class="prose">His name is <strong>Harry James Potter</strong>. He does not know yet what he is. He does not know about the letter coming, about the giant who will collect him, about the world that has been waiting eleven years for his return.</p>
+    <p class="prose">He does not know he is famous.</p>
+    <div class="dialogue"><span class="speaker">The boy in the cupboard</span>He is about to find out.</div>
+    <p class="prose">This is the story of that boy, from the letter to the ending — but the shape of the story depends on you. Every choice Harry makes, you will make for him. Every friendship, every duel, every triumph, every loss: yours to direct.</p>
+    <p class="prose italic" style="text-align:center;color:var(--gold)">Choose wisely. The wizarding world is watching.</p>
+    <button class="btn btn-wide btn-gold" onclick="phaseLetterArrives()">✦ Begin the story ✦</button>`
+  );
+}
+
+/* ===== THE LETTER ===== */
+function phaseLetterArrives(){
+  G.age=10;
+  page('Before Hogwarts — Age Ten','The letters that would not stop',
+    `<p class="prose">Letters. Hundreds of them. Stuffed through the letter box, pushed under the door, slid in through the cat-flap — until Vernon Dursley, face the colour of raw sausage, gathered the family and drove to the middle of nowhere to escape them.</p>
+    <p class="prose">It did not work. On a howling night in a condemned hut on a rock in the sea, a thunderous knock at the door preceded the largest man Harry had ever seen.</p>
+    ${dlg('Hagrid','"Harry — yer a wizard."')}
+    ${dlg('Harry Potter','"I\'m a what?"')}
+    <p class="prose">The giant man — Hagrid — sat himself down, ate most of the birthday cake, and explained with considerable warmth and periodic indignation everything that the Dursleys had spent ten years concealing.</p>
+    ${ch([
+      '"Did you say... Hogwarts?" You say it quietly. It sounds like the name of something that has always existed.',
+      '"My — my parents. You said they were a witch and wizard. They didn\'t die in a car crash?" Something cold and real moves through you.',
+      '"You\'re saying I\'m famous? In this — this other world?" The idea is so strange it almost makes you laugh.',
+      '"I\'ll go. Whatever Hogwarts is. I\'ll go." No hesitation. The cupboard under the stairs was never going to be the whole story.',
+    ],'chooseLetterReact','Harry\'s first response to the news:')}`)
+}
+
+function chooseLetterReact(i){
+  const d=[
+    {stats:{wisdom:6,courage:4},log:'Age 10: Hagrid delivered the truth. You asked about Hogwarts first. Home was a word you had not used before.'},
+    {stats:{courage:5,wisdom:8},log:'Age 10: The truth about your parents. The grief arrived later, when the shock cleared.'},
+    {stats:{cunning:5,wisdom:5},log:'Age 10: Famous. The Boy Who Lived. You would spend years deciding what to do with that.'},
+    {stats:{courage:10,loyalty:5},log:'Age 10: You said yes before you knew what you were saying yes to. It was the right answer.'},
+  ];
+  mut(d[i].stats);
+  addLog(10,d[i].log);
+  phaseGringotts();
+}
+
+function phaseGringotts(){
+  G.age=11;
+  page('Year One — Age Eleven','Diagon Alley',
+    `<p class="prose">Diagon Alley. A world behind a brick wall, teeming and ancient and impossible, and it was all for you — or at least all available to you, which felt close to the same thing. Gringotts, the great goblin bank, yielded up a vault full of gold that was apparently yours. Your parents had left it.</p>
+    <p class="prose">You bought your school supplies. Madam Malkin fitted your robes. You found the wand at <em>Ollivanders,</em> which found you first, or found you instead — a holly wand, eleven inches, phoenix feather core. Mr Ollivander watched the sparks from its tip with an expression that was not entirely reassuring.</p>
+    ${dlg('Mr Ollivander','"Curious... very curious. The phoenix whose tail feather sits in your wand gave another feather — just one other. It is very curious indeed that you should be destined for this wand when its brother gave you that scar."')}
+    <p class="prose">You buy Hedwig, a snowy owl, from Eeylops Owl Emporium. She regards you with amber eyes and the particular dignity of someone who has been waiting for exactly this.</p>
+    <div class="action-result">🪄 Wand acquired: <strong>Holly, 11", Phoenix Feather</strong> — the wand that chose you. <br>🦉 Hedwig joins the story.</div>
+    ${ch([
+      'You spend the last of your allowed Gringotts money on every Quidditch book in Flourish & Blotts. You will learn the rules before you even see the pitch.',
+      'You find a secondhand copy of <em>Quidditch Through the Ages</em> and spend the rest of the afternoon reading in the Leaky Cauldron. The freedom of it is intoxicating.',
+      'You find Hagrid at the Leaky Cauldron and buy him a drink, clumsily, since you have never bought anyone anything before. He looks delighted.',
+      'You sit outside Florean Fortescue\'s Ice Cream Parlour and watch Diagon Alley happen around you. The sheer noise and strangeness of being real to people who knew your name but not your face.',
+    ],'chooseDiagonAlley','How do you spend your last hours in Diagon Alley?')}`)
+}
+
+function chooseDiagonAlley(i){
+  const d=[
+    {stats:{quidditch:10,academic:6},log:'Age 11: Bought every Quidditch book. Wood would eventually notice your advanced knowledge of tactics.'},
+    {stats:{wisdom:7,academic:5},log:'Age 11: Quidditch Through the Ages, cover to cover, before the train left.'},
+    {stats:{hagrid:12,loyalty:7},log:'Age 11: You bought Hagrid a drink. He nearly cried. It was the most natural thing you had done all day.'},
+    {stats:{wisdom:8,cunning:5},log:'Age 11: You sat and watched and tried to understand the shape of the world you had just entered.'},
+  ];
+  mut(d[i].stats);
+  addLog(11,d[i].log);
+  phaseHogwartsExpress();
+}
+
+/* ===== YEAR ONE ===== */
+function phaseHogwartsExpress(){
+  G.year=1;
+  page('Year One — September 1st','Platform Nine and Three-Quarters',
+    `${prog(0,8)}
+    <p class="prose">Platform Nine and Three-Quarters. You almost missed it — the Weasley family, a conspicuous collection of red hair and travelling trunks, showed you the way. The scarlet engine waited with the patience of something that had done this many times before.</p>
+    <p class="prose">You found a compartment. It was almost entirely full when a freckled, thin boy with a smudge on his nose peered in.</p>
+    ${dlg('Ron Weasley','"Excuse me, do you mind? Everywhere else is full."')}
+    ${ch([
+      '"Course not, sit down." You moved your trunk without being asked. He looked relieved.',
+      '"Go ahead." You offered your hand. "I\'m Harry." He went very still for a moment.',
+      'You nodded and went back to the window, but when he mentioned having his own chocolate frogs, you turned around with genuine interest.',
+      '"Harry," you said. "Harry Potter." You thought you\'d better get used to telling people. He nearly fell off the seat.',
+    ],'chooseTrain','How do you greet your first potential friend?')}`)
+}
+
+function chooseTrain(i){
+  const d=[
+    {stats:{ron:18,loyalty:8},log:'Sept 1: Made room for Ron Weasley without being asked. The beginning of something enormous.'},
+    {stats:{ron:20,loyalty:8,reputation:5},log:'Sept 1: Introduced yourself properly. Ron went entirely still when he heard the name.'},
+    {stats:{ron:15,loyalty:6},log:'Sept 1: The Chocolate Frogs opened the conversation. You won Ron\'s trust one card at a time.'},
+    {stats:{ron:12,reputation:8,cunning:4},log:'Sept 1: You said your name. His reaction told you more about the wizarding world in ten seconds than Hagrid had in an hour.'},
+  ];
+  mut(d[i].stats);
+  addLog(11,d[i].log);
+  G.rel.ron=cl(G.rel.ron+d[i].stats.ron,-100,100);
+  // Remove the ron from stats since we already mutated
+  phaseTrainHermione();
+}
+
+function phaseTrainHermione(){
+  page('Year One — The Hogwarts Express','The girl with the bushy hair',
+    `${prog(0,8)}
+    <p class="prose">The compartment door opened again. A girl with a great deal of bushy brown hair and rather large front teeth peered in. Behind her, a round-faced boy who was on the verge of tears.</p>
+    ${dlg('Hermione Granger','"Have you seen a toad at all? A boy named Neville\'s lost one. — Oh! Are you really Harry Potter? I know all about you, of course — I got a few extra books for background reading and you\'re in <em>Modern Magical History</em> and <em>The Rise and Fall of the Dark Arts</em> —"')}
+    <p class="prose">She barely paused for breath. Ron was giving you a look.</p>
+    ${ch([
+      'You listen properly and when she finally pauses, you ask her something about the extra books. Her expression becomes the warmest it has been all sentence.',
+      '"We haven\'t found his toad," you say. "But we\'ll help look if you want." Neville looks immediately more hopeful.',
+      'You ask her name, which she seems surprised anyone is interested in. It becomes the best question you asked all day.',
+      'You are slightly overwhelmed by the volume of information and it shows on your face. She takes this as encouragement to continue.',
+    ],'chooseTrainHermione','How do you respond to Hermione?')}`)
+}
+
+function chooseTrainHermione(i){
+  const d=[
+    {stats:{hermione:18,wisdom:5},log:'The Hogwarts Express: engaged properly with Hermione\'s reading. She looked surprised and pleased in equal measure.'},
+    {stats:{hermione:15,neville:15,loyalty:8},log:'Offered to help find Neville\'s toad. Neither of them forgot.'},
+    {stats:{hermione:20,loyalty:6},log:'Asked her name. She looked startled. She had not expected to matter. She would matter more than almost anyone.'},
+    {stats:{hermione:12,cunning:3},log:'Slightly overwhelmed by Hermione. She interpreted this as interest. She was not entirely wrong.'},
+  ];
+  mut(d[i].stats);
+  addLog(11,d[i].log);
+  G._ftUsed=[];
+  phaseSorting();
+}
+
+function phaseSorting(){
+  page('Year One — The Great Hall','The Sorting Hat',
+    `${prog(1,8)}
+    <p class="prose">The Great Hall was everything. The enchanted ceiling mirrored the night sky — black and deep with real stars. A thousand floating candles. Four long tables bearing the colours and the faces of people who would become your history.</p>
+    <p class="prose">The three-legged stool. The ancient hat. Your name, called by Professor McGonagall.</p>
+    <p class="prose">The hat dropped over your eyes. The world went dark. And then it spoke — not in your ears but in your mind, where it could hear back.</p>
+    ${dlg('The Sorting Hat','"Hmm. Difficult. Very difficult. Plenty of courage, I see. Not a bad mind either. There\'s talent, oh yes — and a thirst to prove yourself... but where to put you? You could be great, you know. It\'s all here in your head. And Slytherin will help you on the way to greatness, there\'s no doubt about that — no?"')}
+    ${ch([
+      '"Not Slytherin." The words come out before you have thought them. The hat pauses. You feel it considering.',
+      'You say nothing, but something in you recoils from the sound of that word. The hat feels it and is silent for a moment.',
+      '"Where do you put someone who is brave enough to be afraid?" You don\'t know where that came from. The hat sounds amused.',
+      '"I want to be where my friends are." Ron said Gryffindor. Hermione seems like Gryffindor. That is enough.',
+    ],'chooseSorting','What do you say to the hat?')}`)
+}
+
+function chooseSorting(i){
+  const d=[
+    {stats:{courage:12,loyalty:8},log:'The hat considered Slytherin. You said not Slytherin. It became: GRYFFINDOR.'},
+    {stats:{courage:10,wisdom:6},log:'You said nothing but meant it. The hat heard. GRYFFINDOR.'},
+    {stats:{courage:8,wisdom:10},log:'You asked a question the hat was not expecting. It appreciated the instinct. GRYFFINDOR.'},
+    {stats:{loyalty:14,courage:6},log:'You chose your friends before you knew your house. The hat approved. GRYFFINDOR.'},
+  ];
+  mut(d[i].stats);
+  addLog(11,d[i].log);
+  G.housePoints+=15;
+  phaseGryffindorReveal();
+}
+
+function phaseGryffindorReveal(){
+  page('Year One — The Great Hall','GRYFFINDOR!',
+    `<div class="reveal-box">
+      <p class="italic" style="color:var(--gold);font-size:18px">A long pause... and then —</p>
+      <span class="reveal-big" style="color:#8b1a1a">GRYFFINDOR!</span>
+      <p class="reveal-sub">Where dwell the brave at heart.</p>
+    </div>
+    <p class="prose">The Gryffindor table erupted. You walked toward the red and gold, toward the ghost of your parents' house, and sat down among people who were now, in some specific and important sense, yours.</p>
+    <p class="prose">Percy Weasley shook your hand formally. The twins immediately offered you a seat between them, which you accepted with the instinct of someone who had never before been offered a seat by anyone.</p>
+    ${dlg('Fred Weasley','"Don\'t worry," said the one on the left.')}
+    ${dlg('George Weasley','"We\'ll look after you," finished the one on the right.')}
+    <div class="action-result">🦁 Welcome to Gryffindor! <br>♥ Fred +10, George +10</div>
+    <button class="btn btn-wide" onclick="phaseFirstWeeks()">Begin first year →</button>`)
+  mut({fred:10,george:10});
+}
+
+function phaseFirstWeeks(){
+  page('Year One — Autumn','The first weeks at Hogwarts',
+    `${hud()}
+    ${prog(1,8)}
+    <p class="prose">The first weeks at Hogwarts were entirely too much — the moving staircases, the portraits with opinions, the ghosts with grudges, the enormous amount of homework. But scattered through all of it: moments of something that had no name yet.</p>
+    <p class="prose">Potions class. The dungeon cold. Professor Snape surveyed the first years with an expression of elegant contempt. His eyes found Harry immediately.</p>
+    ${dlg('Professor Snape','"Ah, yes. Harry Potter. Our new — celebrity." He let the word land. "Tell me, Potter — what would I get if I added powdered root of asphodel to an infusion of wormwood?"')}
+    <p class="prose">The class went very still.</p>
+    ${ch([
+      '"The Draught of Living Death, sir." You had read this on the train. Snape\'s face did not change. Something in his eyes did, slightly.',
+      'You raised your hand — wrong answer, given with the confidence of someone who had misread the chapter. The class laughed. You did not forget their faces.',
+      'You said nothing. You met his gaze and did not look away. He moved on. Something in the room relaxed, slightly.',
+      '"I don\'t know, sir." Directly and simply. He seemed briefly surprised by the honesty.',
+    ],'chooseSnape','How do you respond to Snape\'s question?')}`)
+}
+
+function chooseSnape(i){
+  const d=[
+    {stats:{academic:10,wisdom:6},log:'Potions: answered Snape correctly. He gave you no compliment. The lack of criticism was its own reward.'},
+    {stats:{courage:5,academic:-3,reputation:-5},log:'Potions: wrong answer. The class laughed. Snape described it as "a monument to misplaced confidence."'},
+    {stats:{cunning:8,courage:7},log:'Potions: said nothing, held his gaze. He moved on. You spent the night memorising the chapter.'},
+    {stats:{wisdom:7,courage:4},log:'Potions: said you didn\'t know. He looked briefly startled. Most people lie in that situation.'},
+  ];
+  mut(d[i].stats);
+  addLog(11,d[i].log);
+  G.year1events.potions=true;
+  phaseFirstFlight();
+}
+
+function phaseFirstFlight(){
+  page('Year One — October','The first broom',
+    `${prog(2,8)}
+    <p class="prose">Flying lessons with Madam Hooch. The whole class on broomsticks in the courtyard, Neville wobbling immediately upward and losing control, crashing into a wall, breaking his wrist. Madam Hooch took him to the hospital wing with strict instructions: nobody moves.</p>
+    <p class="prose">Draco Malfoy picked up Neville's Remembrall.</p>
+    ${dlg('Draco Malfoy','"Look at this. Weasley\'s got himself a Remembrall. I\'ll have it." He looked at Harry. "Come and get it, Potter. Or are you going to cry?"')}
+    ${relPanel(['draco','neville'])}
+    ${ch([
+      'You mounted your broom and flew straight at him. Pure instinct. You caught the Remembrall twenty feet from the ground in a move that made the watching class go silent.',
+      'You held his gaze and said, very quietly: "Put it down, Malfoy." The whole class heard. He blinked.',
+      '"It\'s not mine to get." You looked at Neville\'s things. "It\'s Neville\'s." You were hoping Malfoy would see the distinction. He didn\'t, but the class did.',
+      'You flew at him. You were a natural — something clicked in the air that had never clicked anywhere on the ground. McGonagall appeared at a window looking thunderstruck.',
+    ],'chooseFirstFlight','What do you do?')}`)
+}
+
+function chooseFirstFlight(i){
+  const d=[
+    {stats:{quidditch:15,courage:12,draco:-8,neville:12,reputation:15},log:'First flight: caught Neville\'s Remembrall in a full dive. McGonagall watched from a window. "An instinct for flying."',good:1},
+    {stats:{courage:8,cunning:6,draco:-5,neville:8},log:'Told Malfoy to put it down. The class noticed. He didn\'t, but then McGonagall arrived.'},
+    {stats:{loyalty:10,neville:10,courage:5,draco:-3},log:'Said it was Neville\'s. The distinction apparently did not compute for Malfoy.'},
+    {stats:{quidditch:18,courage:14,draco:-8,neville:8,reputation:18},good:1,log:'Flew at him. Full dive. McGonagall watched from a window and immediately took you to meet Oliver Wood.'},
+  ];
+  mut(d[i].stats);
+  addLog(11,d[i].log);
+  G.good+=(d[i].good||0);
+  if(i===0||i===3){ G.quidditch=true; mut({quidditch:5}); }
+  phaseQuidditch1();
+}
+
+function phaseQuidditch1(){
+  page('Year One — October','Gryffindor Seeker',
+    `<div class="action-result">✨ Oliver Wood pulled you aside. You have been made Gryffindor's Seeker — the youngest in a century.</div>
+    ${relPanel(['ron','hermione','draco'])}
+    ${prog(3,8)}
+    <p class="prose">Oliver Wood explained the rules of Quidditch with the systematic enthusiasm of someone who has been waiting for a receptive audience. You absorbed them all. You felt, for the first time in your life, specifically good at something.</p>
+    <p class="prose">Ron was extremely impressed. Hermione looked it up in <em>Quidditch Through the Ages</em> and confirmed that yes, it was exceptional, which was more useful.</p>
+    <p class="prose">First match: Gryffindor versus Slytherin. The whole school watching. Your Nimbus 2000 humming beneath you. And then — your broom began to twitch. Something was wrong.</p>
+    ${dlg('Hermione Granger — in the stands','"Someone\'s jinxing your broom." She is already running toward the teachers\' box, already thinking faster than anyone else.')}
+    ${ch([
+      'You hold on. Grip the broom with everything you have and look for the Snitch while staying alive. The instinct for survival and the instinct for victory feel, at this moment, like the same thing.',
+      'You shout at the broom. This does nothing. You hold on anyway.',
+      'You catch the Snitch. In the confusion and the spinning, your hand shot out and caught it. You nearly swallowed it.',
+      'You fly toward the teachers\' box to see who is jinxing you, which is either brave or tactically extremely good.',
+    ],'chooseQuidditch1','What does Harry do as the broom bucks?')}`)
+}
+
+function chooseQuidditch1(i){
+  const d=[
+    {stats:{quidditch:10,courage:12},log:'First Quidditch match: held on through the jinxing. Caught the Snitch in a dive. Swallowed it. Gryffindor wins.'},
+    {stats:{quidditch:8,courage:10},log:'First Quidditch match: held on through sheer stubbornness. Hermione broke Snape\'s eye contact. You caught the Snitch.'},
+    {stats:{quidditch:12,courage:8},log:'First Quidditch match: caught the Snitch while still being thrown around. Gryffindor wins. Wood wept slightly.'},
+    {stats:{quidditch:8,courage:14,cunning:8},log:'First Quidditch match: flew at the teachers\' box. Bold. The jinxing stopped. You caught the Snitch on the descent.'},
+  ];
+  mut(d[i].stats);
+  addLog(11,d[i].log);
+  G.quidditchWins++;
+  G.housePoints+=50;
+  notify('🏆 Gryffindor wins! +50 house points!');
+  G._ftUsed=[];
+  freeTime('phaseTrollScene',1);
+}
+
+function phaseTrollScene(){
+  page('Year One — Halloween','The mountain troll',
+    `${prog(4,8)}
+    <p class="prose">Halloween. A troll in the dungeons. The Great Hall erupted. But in the chaos of everyone evacuating their houses, someone mentioned that Hermione did not know — she was in the girls\' bathroom on the second floor, and she was alone.</p>
+    ${dlg('Ron Weasley','"It\'s heading toward the girls\' bathrooms." He looked at Harry. Harry looked at him. Neither of them said the thing they were both thinking, which was this: she\'s insufferable but she\'s one of us.')}
+    ${ch([
+      '"Come on." You were already running. The decision made itself.',
+      'You and Ron exchanged a look that was not a conversation but contained everything a conversation would have.',
+      '"She\'s one of us." You said it out loud even though it was obvious. Ron immediately agreed.',
+      'You ran ahead and let Ron follow because there is a specific usefulness to being slightly ahead of your friends in a crisis.',
+    ],'chooseTroll','What does Harry do?')}`)
+}
+
+function chooseTroll(i){
+  const d=[
+    {stats:{courage:12,ron:12,hermione:18,loyalty:14},log:'Halloween: ran to find Hermione. The troll was there. You jammed your wand up its nose. She covered for you afterward. Real friendship.'},
+    {stats:{courage:10,ron:10,hermione:16,loyalty:12},log:'Halloween: the look between you and Ron said it all. You both ran. The troll was managed. Hermione became a friend.'},
+    {stats:{courage:10,ron:8,hermione:20,loyalty:12},log:'Halloween: said she was one of us. Ran. The troll was genuinely enormous. Hermione lied to McGonagall to protect you. You recognised something.'},
+    {stats:{courage:12,ron:10,hermione:16},log:'Halloween: led the sprint. Found the troll. Knocked it out. Hermione modified the truth admirably for McGonagall.'},
+  ];
+  mut(d[i].stats);
+  addLog(11,d[i].log);
+  G.good++;
+  G.year1events.troll=true;
+  phaseYear1Winter();
+}
+
+function phaseYear1Winter(){
+  page('Year One — Winter','The Mirror of Erised',
+    `${prog(5,8)}
+    ${relPanel(['ron','hermione','draco'])}
+    <p class="prose">The Invisibility Cloak arrived on Christmas morning — anonymous, but clearly old, clearly significant. Under it, you found the library after hours, and the library led you, eventually, to a mirror with words carved above the frame: <em>Erised stra ehru oyt ube cafru oyt on wohsi.</em></p>
+    <p class="prose">You looked into the mirror. A family looked back. People with your eyes, your nose, your hair. All of them smiling. All of them yours. You had never seen any of them before.</p>
+    ${dlg('The Mirror','"I show not your face but your heart\'s desire."')}
+    ${ch([
+      'You came back three nights in a row. Each time the family was there, smiling. Each time you had to tear yourself away.',
+      'You brought Ron. He saw himself as Head Boy with the Quidditch Cup. You told him what you saw. He didn\'t know what to say.',
+      'You stood there for a long time and then deliberately walked away. The wanting was a weight you recognised. You did not want to get used to it.',
+      'You described it to Hermione later, carefully, the way you describe something that matters. She looked at you with something you\'ve never had directed at you before: the specific sadness of someone who understands.',
+    ],'chooseMirror','What does Harry do with this discovery?')}`)
+}
+
+function chooseMirror(i){
+  const d=[
+    {stats:{loyalty:8,wisdom:-3,courage:4},log:'Winter: found the Mirror of Erised. Returned three times. Dumbledore eventually found you there.'},
+    {stats:{ron:12,loyalty:8,wisdom:5},log:'Winter: showed Ron the mirror. He saw trophies. You saw family. The difference was specific.'},
+    {stats:{courage:10,wisdom:10},log:'Winter: looked once. Walked away. You have never been good at wanting things you cannot have, and this felt like practice.'},
+    {stats:{hermione:15,wisdom:8},log:'Winter: told Hermione about it. Her expression was the first time someone had looked at you with that particular quality of understanding.'},
+  ];
+  mut(d[i].stats);
+  addLog(11,d[i].log);
+  G._ftUsed=[];
+  freeTime('phasePhilosophersStone',1);
+}
+
+function phasePhilosophersStone(){
+  page('Year One — June','The Philosopher\'s Stone',
+    `${prog(6,8)}
+    <p class="prose">The pieces assembled themselves. Flamel. The Stone. Quirrell. The corridor. The Cerberus asleep above the trap door. You had worked it out — you and Ron and Hermione, together, the way you had worked most things out this year — and now it was time to act.</p>
+    ${dlg('Hermione Granger','"Harry — I\'m frightened. Are you sure you have to go alone?"')}
+    ${dlg('Ron Weasley','"If you think it\'s Snape, go. Just go. We\'ll block Snape — " He was setting up the chess pieces with a specific kind of calm that told you everything.')}
+    ${ch([
+      '"I\'ll go. You two — stay and guard the exit. Be careful." Something large and clear moves through you. This is what it is for, you think. All of it.',
+      '"We go together as far as we can." You were not going to let Ron sacrifice himself at chess while you just walked on. He did it anyway.',
+      'You said nothing. You moved toward the trapdoor. Some things do not require a conversation.',
+      '"If I don\'t come back—" You stopped. "Never mind. I\'ll come back." You were not sure whether that was courage or just refusal to consider the alternative.',
+    ],'chooseStone','What does Harry say before going on alone?')}`)
+}
+
+function chooseStone(i){
+  const d=[
+    {stats:{courage:14,loyalty:12,ron:10,hermione:10},log:'Year one end: said something real to Ron and Hermione before going on. They stayed. They remembered it.'},
+    {stats:{courage:12,loyalty:14,ron:8,hermione:8},log:'Year one end: insisted on going together as long as possible. Ron\'s chess sacrifice was the bravest thing you have ever seen.'},
+    {stats:{courage:16,cunning:5},log:'Year one end: said nothing. Went. Some things do not require a conversation.'},
+    {stats:{courage:14,wisdom:6,ron:8,hermione:6},log:'Year one end: stopped yourself from saying goodbye. Came back anyway. You were right to.'},
+  ];
+  mut(d[i].stats);
+  addLog(11,d[i].log);
+  G.good+=2;
+  mut({horcruxes:0}); // Quirrell defeated
+  phaseStoneConclusion();
+}
+
+function phaseStoneConclusion(){
+  page('Year One — The End','After',
+    `${prog(7,8)}
+    <p class="prose">You woke in the hospital wing. Dumbledore was sitting beside your bed. The Stone was destroyed. Quirrell was dead. Voldemort — the word still requires effort — had fled, again, to whatever formless darkness he inhabited between attempts.</p>
+    ${dlg('Professor Dumbledore','"Your mother died to save you. If there is one thing Voldemort cannot understand, it is love. He did not realize that love as powerful as your mother\'s leaves its own mark. To have been loved so deeply, even though the person who loved us is gone, will give us some protection forever."')}
+    <p class="prose">You lay there and thought about that for a while. You thought about the mirror. You thought about your mother's face in it, smiling at you. You thought about Ron and the chess pieces, and Hermione being the bravest person you had met.</p>
+    <p class="prose">Gryffindor won the House Cup.</p>
+    ${relPanel(['ron','hermione','neville','draco','hagrid','dumbledore'])}
+    <div class="action-result">📊 Year One complete! Stats updated.</div>
+    <button class="btn btn-wide" onclick="startYear2()">Continue to Year Two →</button>`)
+  addLog(11,'End of Year One. The Stone is safe. You survived.');
+  G.housePoints+=170;
+  G.good++;
+}
+
+/* ===== YEAR TWO ===== */
+function startYear2(){
+  G.year=2;G.age=12;G._ftUsed=[];
+  page('Year Two — Summer','Dobby',
+    `${hud()}
+    ${prog(0,7)}
+    <p class="prose">The summer at Privet Drive. Hedwig was locked in her cage. Your letters to Ron and Hermione had gone unanswered (you didn't know yet that they'd been intercepted). And then, the night of Uncle Vernon's important business dinner, something arrived in your bedroom.</p>
+    <p class="prose">A creature. Big, green ears. Tennis-ball eyes. A face like a dog that had seen too much of the world.</p>
+    ${dlg('Dobby','"Harry Potter! Such an honour it is! Dobby has come to warn you, sir. Harry Potter must not return to Hogwarts this year. Terrible things are going to happen at Hogwarts this year."')}
+    ${ch([
+      '"I have to go back. My friends are there. What\'s going to happen?" You push him — gently, because he looks ready to iron his own hands.',
+      '"Why are you here? Who are you?" Logically first. Emotion can come after.',
+      '"If you don\'t tell me, I\'m going back anyway." This is not a negotiating position. It is simply true.',
+      '"Can you get me my letters? The ones from my friends?" This is what you actually want to know.',
+    ],'chooseDobby','How does Harry respond?')}`)
+}
+
+function chooseDobby(i){
+  const d=[
+    {stats:{loyalty:12,courage:8,dobby:15},log:'Year 2 summer: Dobby arrived. You argued. He dropped the pudding. You got the blame.'},
+    {stats:{wisdom:8,cunning:6,dobby:12},log:'Year 2 summer: asked Dobby who he was. He answered in riddles and tears.'},
+    {stats:{courage:12,dobby:10},log:'Year 2 summer: told Dobby you were going anyway. He looked appalled and admiring simultaneously.'},
+    {stats:{loyalty:14,dobby:8},log:'Year 2 summer: asked about your letters. He produced them. He looked terrified of your reaction.'},
+  ];
+  mut(d[i].stats);
+  addLog(12,d[i].log);
+  phaseYear2Whomping();
+}
+
+function phaseYear2Whomping(){
+  page('Year Two — September 1st','The Barrier. The Ford Anglia.',
+    `${prog(1,7)}
+    <p class="prose">Platform Nine and Three-Quarters would not let you through. The barrier held solid. The train had gone. Ron stood beside you with the expression of someone calculating their remaining options.</p>
+    ${dlg('Ron Weasley','"We could — " He looked at the Ford Anglia his dad had enchanted. "I mean — we\'d get in trouble."')}
+    ${dlg('Ron Weasley','"Massive trouble." But he was already walking toward the car.')}
+    ${ch([
+      '"We could fly it." You said it very matter-of-factly, the way you say a thing when the alternative is unacceptable.',
+      'You got in the car. You didn\'t say anything. You were thinking about what Dumbledore would say and then you decided to think about it later.',
+      '"This is a terrible idea." You got in immediately. Some terrible ideas are the right ones.',
+      '"We could Floo. Or write an owl. Or—" Ron was already in the car. You got in.',
+    ],'chooseAnglia','What does Harry decide?')}`)
+}
+
+function chooseAnglia(i){
+  const d=[
+    {stats:{courage:10,ron:8,cunning:5},log:'Year 2: flew the Ford Anglia to Hogwarts. Crashed into the Whomping Willow. Received a Howler.'},
+    {stats:{courage:8,wisdom:3,ron:6},log:'Year 2: got in the Ford Anglia without deliberating. Crashed into the Whomping Willow. Received a Howler.'},
+    {stats:{courage:12,ron:10,wisdom:4},log:'Year 2: said it was terrible and did it anyway. The Whomping Willow agreed it was terrible.'},
+    {stats:{wisdom:5,ron:8,courage:8},log:'Year 2: considered alternatives, got in anyway. The Willow did not care about your deliberation process.'},
+  ];
+  mut(d[i].stats);
+  addLog(12,d[i].log);
+  mut({reputation:-5});
+  phaseYear2Lockhart();
+}
+
+function phaseYear2Lockhart(){
+  page('Year Two — Autumn','Gilderoy Lockhart',
+    `${prog(2,7)}
+    ${relPanel(['ron','hermione','draco'])}
+    <p class="prose">The new Defence Against the Dark Arts teacher arrived with a quantity of self-portraits and a smile that seemed to require structural support. Gilderoy Lockhart, seven-time winner of <em>Witch Weekly's Most-Charming-Smile Award,</em> had opinions about everything and direct experience of most of it, none of which was what it appeared to be.</p>
+    ${dlg('Professor Lockhart','"Gather round, gather round! Now, can anyone tell me what these are?" He gestured to the cage behind him, full of small, bright blue creatures. "Yes — Cornish Pixies! Extremely dangerous! I\'ll deal with them."')}
+    <p class="prose">He released all of them at once. They immediately destroyed the classroom. Lockhart's Expelliarmus rebounded and destroyed his own wand. The class watched with varying expressions.</p>
+    ${ch([
+      'You caught three pixies in one corner while Hermione and Ron took the others. You worked in silence. Something about coordinating without being asked felt significant.',
+      '"Wands out," you said, and the three of you sorted it. You would remember this when Umbridge made practical magic illegal.',
+      'You watched Lockhart for a moment — really watched him — and understood something about the difference between performance and competence.',
+      'You got a pixie stuck in your hair for five minutes and spent the time thinking about what genuine courage actually looked like.',
+    ],'chooseLockhart','How does Harry respond to the chaos?')}`)
+}
+
+function chooseLockhart(i){
+  const d=[
+    {stats:{magic:8,loyalty:10,ron:8,hermione:8},log:'Year 2, Lockhart class: you and Ron and Hermione coordinated in silence. The beginning of something very specific.'},
+    {stats:{courage:10,magic:8,loyalty:8},log:'Year 2, Lockhart class: you organised the response. People followed. You noted this.'},
+    {stats:{wisdom:12,cunning:8},log:'Year 2, Lockhart class: you saw through him. You did not say so yet, but you filed it away.'},
+    {stats:{wisdom:10,courage:6},log:'Year 2, Lockhart class: a pixie in the hair. But you thought, in that undignified moment, about what real bravery costs.'},
+  ];
+  mut(d[i].stats);
+  addLog(12,d[i].log);
+  G._ftUsed=[];
+  freeTime('phaseYear2Duelling',2);
+}
+
+function phaseYear2Duelling(){
+  page('Year Two — The Duelling Club','Serpensortia',
+    `${prog(3,7)}
+    <p class="prose">The Duelling Club. Lockhart and Snape co-running an event together produced a specific energy. Your opponent in the first round was Draco Malfoy, who was delighted by this arrangement.</p>
+    ${dlg('Draco Malfoy','"Scared, Potter?"')}
+    ${dlg('Harry Potter','"You wish."')}
+    <p class="prose">Malfoy conjured a snake. It writhed on the floor and turned toward another student — Justin Finch-Fletchley — and you stepped forward to redirect it.</p>
+    <p class="prose">And then: you spoke to it. In a language that was not English, that hissed and slid through the air. The whole room went very still.</p>
+    ${dlg('Ernie Macmillan','"He\'s a Parselmouth!" The word moved through the room like a cold current.')}
+    ${ch([
+      'You had not known you were doing it. The look on Ron\'s face told you it had been wrong in a way you did not yet understand.',
+      'You tried to explain: "I was just trying to stop it." The explanation did not help. The word Parselmouth had reached everywhere.',
+      'You looked at Draco and understood, for a moment, that he had not expected this either. That this had surprised even him.',
+      'You stood there and let the reaction happen. You had done nothing wrong. The room had decided otherwise.',
+    ],'chooseParseltongue','How does Harry react?')}`)
+}
+
+function chooseParseltongue(i){
+  const d=[
+    {stats:{ron:-8,reputation:-12,courage:6},log:'Year 2, Duelling Club: Parseltongue. Ron\'s face. The rumours started immediately.'},
+    {stats:{courage:10,reputation:-10},log:'Year 2, Duelling Club: tried to explain. The word Parselmouth doesn\'t need explaining, apparently.'},
+    {stats:{wisdom:10,cunning:6,reputation:-10,draco:-5},log:'Year 2: you and Draco were both surprised. You filed that away.'},
+    {stats:{courage:12,reputation:-8},log:'Year 2: let the reaction happen. You had done nothing wrong.'},
+  ];
+  mut(d[i].stats);
+  addLog(12,d[i].log);
+  phaseYear2Chamber();
+}
+
+function phaseYear2Chamber(){
+  page('Year Two — February','The Chamber of Secrets',
+    `${prog(5,7)}
+    <p class="prose">Students petrified. Hermione petrified. A voice in the walls that only you could hear. The diary. Tom Riddle's handwriting answering your own in ink that appeared from nowhere. And finally: the Chamber, accessed through Moaning Myrtle's bathroom, leading down into the dark.</p>
+    <p class="prose">Ginny Weasley. Dying. Tom Riddle, sixteen years old and made of memory, walking toward her with the basilisk behind him.</p>
+    ${dlg('Tom Riddle','"Harry Potter. I\'ve always wanted to meet you. Ginny Weasley opened the Chamber for me. She\'s a funny little thing, isn\'t she? Five years of diary entries — it was quite moving."')}
+    <p class="prose">Fawkes arrived. A battered hat. And a sword.</p>
+    ${ch([
+      'You picked up the sword. You were twelve years old and the basilisk was sixty feet long and you knew, in that moment, that you were going to do it anyway.',
+      'You kept Riddle talking while you planned. The sword was there. The hat was there. The basilisk was enormous. You had perhaps thirty seconds.',
+      'You thought of Ginny. You thought of Ron waiting at the blocked entrance. You picked up the sword.',
+      '"You\'re not Voldemort. You\'re a memory." You said it looking at him. Then you picked up the sword.',
+    ],'chooseBasilisk','What does Harry do?')}`)
+}
+
+function chooseBasilisk(i){
+  const d=[
+    {stats:{courage:18,magic:10,ginny:20},log:'Year 2, the Chamber: you killed the basilisk. A fang in the arm. Fawkes\'s tears. Tom Riddle dissolved. Ginny lived.',good:2},
+    {stats:{courage:15,cunning:8,ginny:18},log:'Year 2: used the time you had. The basilisk died on the sword. You nearly did not survive it.',good:2},
+    {stats:{courage:16,loyalty:14,ginny:22},log:'Year 2: thought of Ginny and acted. She was alive when you reached her.',good:2},
+    {stats:{courage:14,wisdom:8,ginny:18,cunning:6},log:'Year 2: told Riddle what he was first, then dealt with the basilisk.',good:2},
+  ];
+  mut(d[i].stats);
+  addLog(12,d[i].log);
+  G.good+=(d[i].good||0);
+  G.spells.push('Parseltongue');
+  phaseYear2End();
+}
+
+function phaseYear2End(){
+  page('Year Two — End of Year','Dobby. Malfoy. Dumbledore.',
+    `${prog(6,7)}
+    ${relPanel(['ron','hermione','ginny','draco','dumbledore'])}
+    <p class="prose">Dumbledore reinstated. Lockhart's memory: gone. Hermione: unpetrified and already ahead on homework. Ginny: alive, embarrassed, grateful.</p>
+    <p class="prose">Lucius Malfoy, who had arranged Dumbledore's removal, swept into the hospital wing and encountered Harry leaving it. The sock. The diary. Dobby, freed from servitude by a piece of clothing, weeping with the specific joy of something that has been waiting too long.</p>
+    ${dlg('Dobby','"Harry Potter freed Dobby! Harry Potter is greater by far than Dobby knew!"')}
+    ${ch([
+      '"Dobby is free." You said it simply. It was the right thing. You would spend years being glad of him.',
+      'You looked at Malfoy\'s face when he understood what you had done and found, to your surprise, that this was one of the best moments of the year.',
+      'You did not plan it. The sock was in the diary, the diary went to Malfoy, Malfoy threw it. The logic assembled itself.',
+      'You squeezed Dobby\'s hand when he realised. His eyes, enormous and full, were the kind that make you understand what freedom means to someone who has never had it.',
+    ],'chooseYear2End','What does this moment mean to Harry?')}`)
+}
+
+function chooseYear2End(i){
+  const d=[
+    {stats:{loyalty:12,dobby:20,good:1},log:'End of Year 2: Dobby freed. It was the sock and the diary. The logic was accidental; the kindness was not.'},
+    {stats:{cunning:8,courage:5},log:'End of Year 2: Malfoy\'s face. Worth noting.'},
+    {stats:{wisdom:8,cunning:10},log:'End of Year 2: the logic assembled itself. Dobby was free.'},
+    {stats:{loyalty:14,dobby:18},log:'End of Year 2: held Dobby\'s hand when he understood. Some things are worth the time they take.'},
+  ];
+  mut(d[i].stats);
+  if(d[i].good)G.good+=d[i].good;
+  addLog(12,d[i].log);
+  G.rel.dobby=cl(G.rel.dobby+20,-100,100);
+  G._ftUsed=[];
+  startYear3();
+}
+
+/* ===== YEAR THREE ===== */
+function startYear3(){
+  G.year=3;G.age=13;G._ftUsed=[];
+  page('Year Three — September','The Dementor on the train',
+    `${hud()}
+    ${prog(0,7)}
+    <p class="prose">Dementors. On the Hogwarts Express. The temperature dropped. Darkness came, and with it, something specific and terrible — a sound, a woman screaming, a man laughing — and you went under. You came back to Lupin offering chocolate.</p>
+    ${dlg('Professor Lupin','"Here. Eat this. It will help. It\'s not a cure, but it helps."')}
+    <p class="prose">Chocolate had never tasted like that before — warm and spreading and real. He explained what had happened. He looked at you with something that was neither pity nor fear, which made him different from most adults you had encountered.</p>
+    ${ch([
+      '"What was that — the sound, the screaming? I heard a woman." You need to know. Understanding is always better than not understanding.',
+      '"Thank you." Simply. Then: "What\'s a Dementor?"',
+      '"I\'m fine." You said it before you had checked whether it was true. Then you ate the chocolate and revised your statement.',
+      '"Does that happen to everyone?" You had noticed you were the only one who lost consciousness.',
+    ],'chooseDementor','How does Harry respond to Lupin?')}`)
+}
+
+function chooseDementor(i){
+  const d=[
+    {stats:{courage:8,wisdom:10},log:'Year 3: asked about the screaming. Lupin\'s face changed. He told you later. It was your mother.'},
+    {stats:{courage:6,wisdom:8,loyalty:5},log:'Year 3: asked what a Dementor was. Lupin explained. His explanations are the best kind — complete.'},
+    {stats:{courage:10,wisdom:5},log:'Year 3: said you were fine before confirming it. The chocolate proved you wrong.'},
+    {stats:{wisdom:12,courage:6},log:'Year 3: asked if it happened to everyone. The question told Lupin something. He filed it carefully.'},
+  ];
+  mut(d[i].stats);
+  addLog(13,d[i].log);
+  G.rel.sirius=G.rel.sirius||0;
+  phaseBoggart();
+}
+
+function phaseBoggart(){
+  page('Year Three — October','The Boggart',
+    `${prog(1,7)}
+    ${relPanel(['ron','hermione','neville'])}
+    <p class="prose">Defence Against the Dark Arts. The wardrobe in the corner. Something inside it that breathed in time with fear. Professor Lupin explained: a Boggart. It becomes whatever you most dread. The charm: <em>Riddikulus.</em> The weapon: laughter.</p>
+    ${dlg('Professor Lupin','"It doesn\'t really matter what form the Boggart takes. The important thing is to concentrate. Focus on the laughter."')}
+    <p class="prose">The class worked through, one by one. Neville, bravely first: Snape in his grandmother's clothes. Spectacular. The Boggart reached Harry.</p>
+    <p class="prose">It flickered between forms. A hooded figure. A green flash. A woman's scream. And then — it couldn't find the right shape and stood there, shifting.</p>
+    ${ch([
+      'You held your wand level. "Riddikulus." The hooded figure tripped and fell. The class laughed. You felt the cold leave the room.',
+      'You made it a giant spider with roller skates. The absurdity of it broke through the dread. Sometimes the ridiculous is exactly the right tool.',
+      'You made it Voldemort doing something entirely undignified. The laughter from the class was enormous and genuine.',
+      'It became a full moon — Lupin\'s greatest fear — before you could act. He stepped in front of it. You would remember that.',
+    ],'chooseBoggart','What happens with the Boggart?')}`)
+}
+
+function chooseBoggart(i){
+  const d=[
+    {stats:{courage:12,magic:8},log:'Year 3 Boggart lesson: Riddikulus. The hooded figure tripped. Room laughed.'},
+    {stats:{cunning:8,magic:8,courage:10},log:'Year 3 Boggart: giant spider with roller skates. Sometimes ridiculous is right.'},
+    {stats:{courage:14,magic:8,reputation:8},log:'Year 3 Boggart: Voldemort. Undignified. Huge class laugh.'},
+    {stats:{wisdom:10,loyalty:8},log:'Year 3 Boggart: it became a full moon. Lupin stepped in front. You understood something you didn\'t understand yet.'},
+  ];
+  mut(d[i].stats);
+  addLog(13,d[i].log);
+  G.spells.push('Riddikulus');
+  phasePatronus();
+}
+
+function phasePatronus(){
+  page('Year Three — Winter','Learning the Patronus',
+    `${prog(2,7)}
+    <p class="prose">Lupin offered private lessons. You accepted. The lesson involved a real Dementor (a Boggart-Dementor, which was still something). The Patronus Charm: <em>Expecto Patronum.</em> The requirement: a memory of intense happiness.</p>
+    ${dlg('Professor Lupin','"A Dementor feeds on happy memories — takes them. So we must use the happiest memory we have. The most powerful one. Close your eyes. Think of the memory. Allow yourself to feel it completely."')}
+    <p class="prose">You thought of different things. The first time you flew. Waking up at the Weasleys. Ron's face when you said you were real friends.</p>
+    ${ch([
+      'Your first flight on the Nimbus. The feeling of air and height and something finally clicking into place — of being specifically good at something, maybe for the first time.',
+      'Waking up at the Burrow. The warmth of it. The noise of it. People moving around each other with the ease of people who have always shared a home.',
+      'Ron and Hermione. The troll and the Stone and the chess board and everything that followed. The specific feeling of being worth someone\'s loyalty.',
+      'Your parents\' faces in the mirror. You didn\'t know them but they knew you. They were proud. You felt it.',
+    ],'choosePatronus','What memory does Harry use?')}`)
+}
+
+function choosePatronus(i){
+  const d=[
+    {stats:{magic:12,courage:8},log:'Year 3 Patronus: used the first flight. A stag burst from the wand — silver, enormous, completely certain.'},
+    {stats:{magic:10,loyalty:12},log:'Year 3 Patronus: used the Burrow. A stag. Lupin looked at it for a long time.'},
+    {stats:{magic:11,loyalty:14},log:'Year 3 Patronus: used his friends. A stag — full-formed, silver. Lupin was very still when it faded.'},
+    {stats:{magic:13,courage:10},log:'Year 3 Patronus: used his parents\' faces. The stag came out complete, enormous. Lupin had to look away.'},
+  ];
+  mut(d[i].stats);
+  addLog(13,d[i].log);
+  G.patronus='Stag';
+  G.spells.push('Expecto Patronum');
+  notify('🌟 Patronus Charm mastered: A Stag!');
+  G._ftUsed=[];
+  freeTime('phaseBuckbeak',3);
+}
+
+function phaseBuckbeak(){
+  page('Year Three — Spring','Buckbeak',
+    `${prog(4,7)}
+    <p class="prose">Buckbeak was to be executed. Hagrid was devastated. The Committee for the Disposal of Dangerous Creatures had decided, and Draco Malfoy's father had influenced the decision, and Hermione had filed an appeal that had every procedural virtue and no hope.</p>
+    ${dlg('Hagrid','"He\'s innocent. He never hurt no one who weren\'t asking for it. And Draco—" He couldn\'t finish.')}
+    ${ch([
+      '"We\'ll appeal again. And again. We\'ll find something they can\'t ignore." You know it\'s probably not enough. You say it anyway.',
+      '"We should go see him now. Spend time with him. That matters too." Not all fights can be won. Some things are about presence.',
+      '"There has to be something. A legal angle, a precedent, anything." Hermione\'s jaw sets. Ron pulls out parchment.',
+      '"We\'ll be there tonight. Whatever happens." You mean it. Hagrid\'s eyes fill.',
+    ],'chooseBuckbeak','What does Harry do?')}`)
+}
+
+function chooseBuckbeak(i){
+  const d=[
+    {stats:{courage:10,loyalty:8,hagrid:10},log:'Year 3 Buckbeak: filed another appeal. It went as expected. The Time Turner changed what followed.'},
+    {stats:{loyalty:14,hagrid:15,wisdom:6},log:'Year 3: went to be with Hagrid and Buckbeak. Some things are about presence more than solution.'},
+    {stats:{wisdom:10,hermione:8,loyalty:8,hagrid:8},log:'Year 3: Hermione researched. You all tried. The Time Turner made it possible anyway.'},
+    {stats:{loyalty:12,hagrid:14,courage:8},log:'Year 3: promised to be there. You were. Then the Time Turner changed the ending.'},
+  ];
+  mut(d[i].stats);
+  addLog(13,d[i].log);
+  phaseShriekingShack();
+}
+
+function phaseShriekingShack(){
+  page('Year Three — The Shrieking Shack','Sirius Black',
+    `${prog(5,7)}
+    <p class="prose">The Shrieking Shack. Sirius Black, not what the newspapers had said. Peter Pettigrew, your father's supposed friend, the real traitor, the man who had given your parents to Voldemort and lived twelve years as a rat in Ron's pocket.</p>
+    <p class="prose">Pettigrew wept. Begged. Pointed at Harry.</p>
+    ${dlg('Peter Pettigrew','"Harry — James\'s son. You look so much like your father. Your father — your father would have spared me, he would have shown mercy —"')}
+    ${ch([
+      '"My father was betrayed by you. Don\'t speak about him." But you lowered your wand. You did not want to be a killer. Sirius and Lupin looked at each other.',
+      '"I\'m not going to kill you. But you\'re going to face the Dementors." You meant that. You wanted him to face something real.',
+      '"Get up." You said it to Pettigrew. "You\'re going to Dumbledore. Then Azkaban. Then my parents might finally be acknowledged."',
+      '"You won\'t get to use my father\'s name." But you let him live. It felt wrong and right at the same time. Those feelings are not always opposites.',
+    ],'choosePettigrew','What does Harry decide about Pettigrew?')}`)
+}
+
+function choosePettigrew(i){
+  const d=[
+    {stats:{courage:12,wisdom:12,sirius:20},log:'Year 3: spared Pettigrew. Not mercy — refusal to become what he feared. Sirius saw it.'},
+    {stats:{courage:10,wisdom:10,sirius:18},log:'Year 3: spared Pettigrew, intended Azkaban. The Dementors did not manage even that.'},
+    {stats:{courage:14,loyalty:12,sirius:16},log:'Year 3: spared him for your parents\' sake, not his. Sirius understood.'},
+    {stats:{wisdom:14,sirius:14,courage:10},log:'Year 3: two feelings that weren\'t opposites. You held both. Pettigrew escaped anyway.'},
+  ];
+  mut(d[i].stats);
+  addLog(13,d[i].log);
+  G.good++;
+  phaseTimeTurner();
+}
+
+function phaseTimeTurner(){
+  page('Year Three — The End','The Time Turner',
+    `${prog(6,7)}
+    <p class="prose">Hermione had one all year. She used it tonight, and you used it with her. Three hours back. Two of you, watching yourselves from the shadows, steering events from the outside.</p>
+    <p class="prose">Buckbeak: freed. Sirius: on Buckbeak, flying out of the tower into the open air.</p>
+    <p class="prose">It was not justice. Pettigrew escaped. Sirius could not come back. But Buckbeak was alive, and Sirius was free in the only way available, and you had done this with your own hands.</p>
+    ${dlg('Sirius Black — from Buckbeak\'s back','"Thank you, Harry. You\'re — you\'re more like your father than you know. You have his courage. Maybe more."')}
+    ${relPanel(['ron','hermione','sirius','hagrid','neville'])}
+    <div class="action-result">Year Three complete! The stag Patronus burns in your chest like something permanent.</div>
+    <button class="btn btn-wide" onclick="startYear4()">Continue to Year Four →</button>`)
+  addLog(13,'End of Year Three. Sirius flew free. The stag Patronus held against the Dementors. Pettigrew escaped. Injustice is not always the last word.');
+  G.good++;
+}
+
+/* ===== YEAR FOUR ===== */
+function startYear4(){
+  G.year=4;G.age=14;G._ftUsed=[];
+  page('Year Four — Summer','The Quidditch World Cup',
+    `${hud()}
+    ${prog(0,8)}
+    <p class="prose">The Quidditch World Cup. Ireland versus Bulgaria. The Weasleys obtained tickets by means that Mr Weasley described as "favours" and Mrs Weasley described as "don't ask." You sat in the top box and watched Viktor Krum, Bulgaria's Seeker, perform manoeuvres that defied the basic physical properties of broomsticks.</p>
+    ${dlg('Ron Weasley','"Krum\'s only a sixth year! And he\'s already playing internationally!" Ron sounded torn between admiration and despair.')}
+    ${ch([
+      '"He\'s incredible." You watched Krum pull a Wronski Feint and understood, viscerally, what separated you from him. You spent the next month of practice trying to close the gap.',
+      '"Look at his seeker instinct." You analysed rather than admired. The technical gap was real. The instinct gap was smaller than Ron thought.',
+      'You watched Ireland\'s Chasers instead. You had decided, this year, to understand the whole game rather than just your position.',
+      '"I want to fly like that." You said it simply. Ginny, sitting beside you, said: "You\'re better than you think."',
+    ],'chooseWorldCup','How does Harry watch Viktor Krum?')}`)
+}
+
+function chooseWorldCup(i){
+  const d=[
+    {stats:{quidditch:12,courage:8},log:'Year 4 World Cup: watched Krum and practiced the Wronski Feint for a month.'},
+    {stats:{quidditch:10,wisdom:8,cunning:6},log:'Year 4 World Cup: analysed Krum\'s technique. Applied it selectively.'},
+    {stats:{quidditch:8,wisdom:10,magic:5},log:'Year 4 World Cup: watched the Chasers. Understanding the whole game.'},
+    {stats:{quidditch:10,ginny:12,courage:6},log:'Year 4 World Cup: Ginny said you were better than you thought. You held onto that.'},
+  ];
+  mut(d[i].stats);
+  addLog(14,d[i].log);
+  phaseTriwizard();
+}
+
+function phaseTriwizard(){
+  page('Year Four — Autumn','The Triwizard Tournament',
+    `${prog(1,8)}
+    <p class="prose">The announcement. Hogwarts host to the Triwizard Tournament — one champion from each school, tasks of increasing danger, eternal glory and a thousand Galleons.</p>
+    <p class="prose">The Goblet of Fire. Everyone under seventeen could not enter. The Age Line kept the underage away. Fred and George attempted to cross it with an Aging Potion and acquired magnificent white beards. The night before the deadline, the common room debated whether entering was sense or madness.</p>
+    ${ch([
+      'You did not enter. You were fourteen. The age restriction was there for a reason, and the last thing you needed was another near-death experience.',
+      'You entered. The wanting was stronger than the caution. You needed to know what you were capable of.',
+      'You sat with it for a long time before deciding not to. Some risks are chosen. This one felt chosen for you.',
+      'You told Ron and Hermione you weren\'t entering. Then went to bed. Then lay there for three hours thinking about it. Did not enter.',
+    ],'chooseTriwizard','Does Harry enter the Goblet of Fire?')}`)
+}
+
+function chooseTriwizard(i){
+  const d=[
+    {stats:{wisdom:10,courage:6},log:'Year 4: did not enter the Goblet. Your name came out anyway.'},
+    {stats:{courage:14,cunning:6,reputation:8},log:'Year 4: entered the Goblet. Your name came out. You wonder, later, if they are connected.'},
+    {stats:{wisdom:12,courage:6},log:'Year 4: chose not to enter. Your name came out. Nobody chose it. You were chosen.'},
+    {stats:{wisdom:10,courage:8},log:'Year 4: deliberated and did not enter. Your name came out from a fire that had never seen your handwriting.'},
+  ];
+  mut(d[i].stats);
+  addLog(14,d[i].log);
+  phaseChampion();
+}
+
+function phaseChampion(){
+  page('Year Four — The Champion','Harry Potter',
+    `${prog(2,8)}
+    <div class="action-result">The Goblet of Fire shoots a fourth piece of parchment — <strong>Harry Potter, Hogwarts.</strong></div>
+    <p class="prose">The room went very still. Then very loud. Ron's face: something you would think about for a long time afterward.</p>
+    ${dlg('Ron Weasley','"That\'s — they must have made a mistake." But his voice had something in it that wasn\'t conviction.')}
+    <p class="prose">Ron thought you had entered behind his back. The argument that followed was specific in its wounds — he accused; you refused to beg. The silence between you was a kind of violence.</p>
+    ${ch([
+      '"I didn\'t enter. But I can\'t make you believe that." You said it once, clearly, and stopped arguing. Some things you cannot prove.',
+      '"Ron, I swear on my parents\' graves I didn\'t put my name in." The weight of that stopped him for a moment.',
+      'You walked away. The anger was clean. If Ron chose not to believe you, you would not chase the belief.',
+      '"Someone else entered me. Which means someone wants me in this tournament. That should be the conversation we\'re having."',
+    ],'chooseRonFight','How does Harry respond to Ron?')}`)
+}
+
+function chooseRonFight(i){
+  const d=[
+    {stats:{courage:10,ron:-15,wisdom:10},log:'Year 4: said it once to Ron and stopped arguing. The silence lasted weeks.'},
+    {stats:{loyalty:12,ron:-8,courage:8},log:'Year 4: swore on your parents. Ron looked briefly uncertain. The estrangement continued anyway.'},
+    {stats:{cunning:6,ron:-18,courage:12},log:'Year 4: walked away. Clean anger. Ron had to come back on his own terms. He did, eventually.'},
+    {stats:{wisdom:14,ron:-10,courage:8},log:'Year 4: reframed the conversation. Ron heard it, eventually.'},
+  ];
+  mut(d[i].stats);
+  addLog(14,d[i].log);
+  phaseFirstTask();
+}
+
+function phaseFirstTask(){
+  page('Year Four — November','The First Task: Dragons',
+    `${prog(3,8)}
+    <p class="prose">A dragon. A Hungarian Horntail. You had no idea how to get past it until Hagrid showed you, and you had no plan until you and Hermione and the Firebolt and two days of desperate thinking produced one:</p>
+    <p class="prose"><em>Accio Firebolt.</em></p>
+    ${dlg('Hermione Granger','"It\'s brilliant, Harry. If it works. If it doesn\'t—" She stopped. "It\'ll work."')}
+    <p class="prose">The Firebolt arrived. You mounted it above sixty thousand spectators and a dragon that did not appreciate being approached from above.</p>
+    ${ch([
+      'Full acceleration. The crowd noise fell away. Just you and the Horntail and the specific geometry of the problem. You caught the Golden Egg.',
+      'You led the Horntail away from the arena and then doubled back for the egg. More time. Safer. Still brilliant.',
+      'You flew straight at her eyes — the Horntail flinched — and grabbed the egg in the flinch. The crowd erupted.',
+      'You used the full arena — teasing, dodging, waiting for the right moment — before diving for the egg at the exact second she committed to the wrong direction.',
+    ],'chooseFirstTask','What is Harry\'s strategy?')}`)
+}
+
+function chooseFirstTask(i){
+  const d=[
+    {stats:{quidditch:12,courage:16,reputation:18},log:'First task: straight at it. Caught the Golden Egg. Tied for first with Krum.'},
+    {stats:{quidditch:10,wisdom:12,courage:12,reputation:14},log:'First task: led the Horntail away and doubled back. Points for creativity.'},
+    {stats:{quidditch:14,courage:14,cunning:10,reputation:16},log:'First task: dove at her eyes. Flinch. Egg. The crowd was on its feet.'},
+    {stats:{quidditch:12,wisdom:10,cunning:12,reputation:14},log:'First task: used the whole arena. Elegant, patient, effective.'},
+  ];
+  mut(d[i].stats);
+  addLog(14,d[i].log);
+  G.quidditchWins++;
+  G.housePoints+=40;
+  notify('🥚 First task complete! Harry is in the lead!');
+  phaseYuleBall();
+}
+
+function phaseYuleBall(){
+  page('Year Four — December','The Yule Ball',
+    `${prog(4,8)}
+    <p class="prose">The Yule Ball. Champions must open the dance. You needed a partner. The process of locating one was one of the more humbling experiences of the year — Cho Chang said yes to Cedric Diggory; everyone you considered said yes to someone else. Eventually: Parvati Patil, which was kind of her.</p>
+    <p class="prose">The ball itself: Parvati deserved better attention than she received from you. You watched Hermione — who turned out to be someone the school had not known was beautiful, which said something about the school — dance with Viktor Krum. You sat with Ron and both of you were entirely unpleasant about it.</p>
+    ${relPanel(['hermione','ron','cho','ginny','cedric'])}
+    ${ch([
+      'You apologised to Parvati properly at the end. She was gracious about it. You noted that grace under disappointment is rarer than it should be.',
+      'You talked to Cedric Diggory. Despite the competition — despite Cho being on his arm — you found him surprisingly decent. You were glad you made the effort.',
+      'You watched Hermione and tried to be happy for her and mostly managed it. Some things take practice.',
+      'You danced properly with Parvati, which required overcoming considerable self-consciousness. It turned out fine. She was an excellent dancer.',
+    ],'chooseYuleBall','How does Harry behave at the Yule Ball?')}`)
+}
+
+function chooseYuleBall(i){
+  const d=[
+    {stats:{loyalty:8,reputation:6,wisdom:8},log:'Yule Ball: apologised to Parvati properly. She was gracious. You remember it.'},
+    {stats:{cedric:18,wisdom:8,courage:6},log:'Yule Ball: talked to Cedric Diggory. Found him unexpectedly decent.'},
+    {stats:{hermione:8,ron:6,wisdom:10},log:'Yule Ball: tried to be happy for Hermione. Mostly managed it.'},
+    {stats:{courage:8,loyalty:8,reputation:8},log:'Yule Ball: danced with Parvati properly. She was an excellent dancer. It was fine.'},
+  ];
+  mut(d[i].stats);
+  addLog(14,d[i].log);
+  G._ftUsed=[];
+  freeTime('phaseSecondTask',4);
+}
+
+function phaseSecondTask(){
+  page('Year Four — February','The Second Task: The Lake',
+    `${prog(5,8)}
+    <p class="prose">One hour. Underwater. Something important taken. Gillyweed: Neville found it in a Herbology textbook and you took it without fully knowing what it would do, which was, in the circumstances, as good as having a plan.</p>
+    <p class="prose">At the bottom of the lake: Ron. Hermione. Cho. And a small girl you had never met — Fleur Delacour's sister. Fleur had not come back up. You had the Gillyweed and a conscience and not enough time.</p>
+    ${ch([
+      'You saved the girl. Even with the task running out. Because she was a child at the bottom of a lake and you were the only one still there.',
+      'You saved Ron — your thing — and when Fleur still hadn\'t appeared for her sister, you went back for the girl. You nearly missed the hour.',
+      'You stayed until every hostage was free. The judges gave you points for "moral fiber." Ron found this both impressive and embarrassing.',
+      'You grabbed Ron and the girl simultaneously. You are fairly strong from Quidditch. You nearly managed it in one.',
+    ],'chooseSecondTask','What does Harry do about Fleur\'s sister?')}`)
+}
+
+function chooseSecondTask(i){
+  const d=[
+    {stats:{courage:14,loyalty:12,reputation:12},good:1,log:'Second task: saved Fleur\'s sister. "Outstanding moral fiber." Points deducted for lateness. Overall: second place.'},
+    {stats:{loyalty:14,courage:12,ron:8,reputation:10},good:1,log:'Second task: Ron first, then Gabrielle. Nearly timed out. Judges noted it.'},
+    {stats:{courage:12,loyalty:16,reputation:14},good:1,log:'Second task: all hostages free. Points for moral fiber. You were proud of that more than the score.'},
+    {stats:{courage:12,loyalty:12,quidditch:6,reputation:10},good:1,log:'Second task: grabbed two at once. Extraordinary physical effort. Mostly worked.'},
+  ];
+  mut(d[i].stats);
+  addLog(14,d[i].log);
+  G.good+=(d[i].good||0);
+  G.housePoints+=40;
+  phaseThirdTask();
+}
+
+function phaseThirdTask(){
+  page('Year Four — June','The Third Task: The Maze',
+    `${prog(6,8)}
+    <p class="prose">The Triwizard Maze. Enchanted hedges. Creatures. Obstacles. And at the centre: the Cup. You had told Cedric about the dragons. You had carried the year in a specific kind of honour that felt important to maintain even when it cost you position.</p>
+    <p class="prose">Cedric caught your eye in the maze. He was in trouble. The choice presented itself.</p>
+    ${ch([
+      '"Cedric!" You shouted. He heard. The Spider was distracted. You worked together for the next twenty minutes and arrived at the Cup together.',
+      'You saved Cedric and lost ten minutes. He found you later in the maze when you were about to lose. The debt was paid.',
+      '"We take it together." You looked at Cedric. He looked at you. Neither of you suggested otherwise.',
+      'You reached the Cup first. You could have taken it. You waited for Cedric.',
+    ],'chooseThirdTask','What does Harry do about Cedric?')}`)
+}
+
+function chooseThirdTask(i){
+  const d=[
+    {stats:{courage:14,loyalty:16,cedric:20},good:1,log:'Third task: saved Cedric. Worked together. Arrived at the Cup together.'},
+    {stats:{loyalty:14,cedric:18,courage:12},good:1,log:'Third task: saved Cedric. He found you later. You both reached the Cup.'},
+    {stats:{loyalty:18,cedric:22,courage:12},good:1,log:'Third task: "We take it together." Both hands on the Cup. A portkey.'},
+    {stats:{loyalty:12,cedric:16,courage:10},good:1,log:'Third task: waited for Cedric. "Together, then." The Cup. A portkey.'},
+  ];
+  mut(d[i].stats);
+  addLog(14,d[i].log);
+  G.good+=(d[i].good||0);
+  phaseGraveyard();
+}
+
+function phaseGraveyard(){
+  page('Year Four — The Graveyard','Voldemort Returns',
+    `${prog(7,8)}
+    <p class="prose">A graveyard. Little Hangleton. A cauldron. Wormtail. And then — Voldemort. Not a shade. Not a memory. Flesh, blood, power, and a wand made from bone and the blood they took from you.</p>
+    <p class="prose">The duel. <em>Avada Kedavra</em> versus <em>Expelliarmus.</em> The twin cores. The Priori Incantatem.</p>
+    <p class="prose">And then: echoes. Your parents. Cedric asking you to take his body home.</p>
+    ${dlg('Cedric Diggory — an echo','"Take my body back, will you? Take my body back to my parents."')}
+    ${ch([
+      '"I will." You meant it. You held onto it through everything that followed. You took him home.',
+      'You said nothing but you understood it as a task that had been given to you. You did not fail it.',
+      'The echo of him steadied you more than anything else in that graveyard. You held onto it and ran.',
+      '"I promise." Two words. The most important thing you said that year.',
+    ],'chooseGraveyard','What does Harry promise Cedric?')}`)
+}
+
+function chooseGraveyard(i){
+  const d=[
+    {stats:{courage:18,loyalty:20,magic:10},log:'The graveyard: "I will." You held his body through the Portkey. His parents were waiting.'},
+    {stats:{courage:16,loyalty:18,magic:10},log:'The graveyard: made it a task. Did not fail it. Cedric came home.'},
+    {stats:{courage:16,loyalty:16,magic:12},log:'The graveyard: Cedric\'s echo steadied you. You held on. You came back.'},
+    {stats:{courage:14,loyalty:20,magic:8},log:'The graveyard: "I promise." Two words. You kept them.'},
+  ];
+  mut(d[i].stats);
+  addLog(14,d[i].log);
+  G.good+=2;
+  G.rel.cedric=cl(G.rel.cedric+10,-100,100);
+  phaseYear4End();
+}
+
+function phaseYear4End(){
+  page('Year Four — The End','The truth',
+    `${relPanel(['ron','hermione','dumbledore','sirius','cedric'])}
+    <p class="prose">Dumbledore's office. Fawkes. Dumbledore asking you — asking, not commanding — whether you were willing to tell him what happened. You told him everything. It took a long time. He listened the whole way through without interrupting once.</p>
+    <p class="prose">After: the scar on your arm where Wormtail had cut you. The memory of your parents' faces in the echo. Cedric's parents receiving his body on the grounds. A specific grief — not dramatic, not loud — for a boy who had been decent to you and deserved better.</p>
+    <p class="prose"><em>He was a person</em>, you thought. <em>He was a person and that should have been enough.</em></p>
+    <div class="action-result">Year Four complete. Voldemort has returned. The wizarding world is not ready to hear it yet.</div>
+    <button class="btn btn-wide" onclick="startYear5()">Continue to Year Five →</button>`)
+  addLog(14,'End of Year Four. Voldemort is back. Cedric is gone. The year cost more than any before it.');
+}
+
+/* ===== YEAR FIVE ===== */
+function startYear5(){
+  G.year=5;G.age=15;G._ftUsed=[];
+  page('Year Five — Summer','Number Twelve, Grimmauld Place',
+    `${hud()}
+    ${prog(0,8)}
+    <p class="prose">The Order of the Phoenix. A secret society using a house that Sirius Black had inherited from a family who would have been appalled by it. Sirius himself was confined here — unable to leave, not trusted with missions, pacing the house like something that had grown too large for its cage.</p>
+    ${dlg('Sirius Black','"I\'d rather be at Hogwarts with you. I\'d rather be anywhere. But — this is the work. Staying here and staying safe so I don\'t give them a reason to catch me."')}
+    ${ch([
+      '"We could play chess. Or talk. Just — be here together." Sirius looked at you like you had said something genuinely kind. Maybe you had.',
+      '"You\'re doing more than you think by being alive." You had thought about this. Sirius being safe was a form of fighting.',
+      '"I hate this for you." Simply. He looked startled. Then he smiled — a real one, without the performance.',
+      '"Tell me about my dad." You hadn\'t planned to ask it. Sirius went still, then leaned forward, and talked for three hours.',
+    ],'chooseGrimmauld','What does Harry say to Sirius?')}`)
+}
+
+function chooseGrimmauld(i){
+  const d=[
+    {stats:{sirius:18,loyalty:10},log:'Year 5 summer: played chess with Sirius. Talked. It was not enough but it was not nothing.'},
+    {stats:{sirius:15,wisdom:8},log:'Year 5 summer: told Sirius being alive was a form of fighting. He received it carefully.'},
+    {stats:{sirius:20,loyalty:8},log:'Year 5 summer: said you hated it for him. He looked startled. Then smiled.'},
+    {stats:{sirius:22,wisdom:10},log:'Year 5 summer: asked about your dad. Sirius talked for three hours. You held every word.'},
+  ];
+  mut(d[i].stats);
+  addLog(15,d[i].log);
+  phaseUmbridge();
+}
+
+function phaseUmbridge(){
+  page('Year Five — Autumn','Dolores Umbridge',
+    `${prog(1,8)}
+    <p class="prose">The new Defence Against the Dark Arts teacher arrived with the particular smile of someone who has decided to be liked on their own terms. Professor Umbridge. Pink cardigan. Plates of kittens. Ministry decrees accumulating on the notice boards like a slow disaster.</p>
+    ${dlg('Professor Umbridge','"Our new curriculum will be theory-based. There will be no need to use spells in my classroom. Hands up who can tell me why?"')}
+    ${dlg('Harry Potter','"Because there\'s no need, apparently, to defend ourselves from an actual Dark Lord?" The class went silent.')}
+    ${ch([
+      '"You\'re lying about Voldemort returning and we all know it." Cold. Direct. The room inhaled sharply.',
+      '"He\'s back. I was there. I watched Cedric Diggory die and I watched Voldemort return and the Ministry is wrong." Every word measured.',
+      '"The curriculum is designed by people who weren\'t in a graveyard on June twenty-fourth." Technically true. She couldn\'t contradict it.',
+      'You kept talking. Each time she interrupted, you spoke over the interruption. The class was very still.',
+    ],'chooseUmbridge','Harry continues:')}`)
+}
+
+function chooseUmbridge(i){
+  const d=[
+    {stats:{courage:16,reputation:8,cunning:5},log:'Year 5, Umbridge: said it directly. Received a week of detentions writing with the Blood Quill.'},
+    {stats:{courage:14,wisdom:8,reputation:6},log:'Year 5, Umbridge: each word measured. She gave you detentions. The class believed you, quietly, individually.'},
+    {stats:{cunning:10,courage:12,wisdom:8,reputation:6},log:'Year 5, Umbridge: technically accurate statement. She seethed. You had detention anyway.'},
+    {stats:{courage:18,wisdom:5,reputation:4},log:'Year 5, Umbridge: kept talking over her. The class remembered. So did she.'},
+  ];
+  mut(d[i].stats);
+  addLog(15,d[i].log);
+  G.detentions+=3;
+  phaseDA();
+}
+
+function phaseDA(){
+  page('Year Five — The Hog\'s Head','Dumbledore\'s Army',
+    `${prog(2,8)}
+    <p class="prose">Hermione organised it. The Hog\'s Head, Hogsmeade, a Saturday. Twenty-nine students from five houses sitting on mismatched chairs looking at you. Hermione had convinced them to come. Now you had to convince them it was worth it.</p>
+    ${dlg('Hermione Granger','"Harry fought You-Know-Who last year. He saw him come back. We all heard what happened in the graveyard. He taught himself from books and instinct and we should listen to him."')}
+    ${ch([
+      '"I\'m not going to pretend I\'m better at this than I am. But I\'ve used real spells in real situations and I can teach you what worked."',
+      '"Voldemort\'s back. That\'s the argument. Any Defence you don\'t have is a Defence that can\'t save you."',
+      '"I don\'t want to be the one talking. I want us to learn together. What do you all already know? What do you need?"',
+      '"The Ministry doesn\'t want us prepared. That should tell you everything about whether we should prepare."',
+    ],'chooseDA','What does Harry say to start the DA?')}`)
+}
+
+function chooseDA(i){
+  const d=[
+    {stats:{courage:10,loyalty:12,magic:8,reputation:12},log:'DA first meeting: honest about limits. Offered what was real. They came back.'},
+    {stats:{courage:14,loyalty:10,reputation:10},log:'DA first meeting: Voldemort\'s back, that\'s the argument. Clean. True.'},
+    {stats:{wisdom:12,loyalty:14,magic:8},log:'DA first meeting: invited them in. Asked what they needed. It became a real collaboration.'},
+    {stats:{cunning:10,courage:12,reputation:8},log:'DA first meeting: pointed at the Ministry\'s motives. They understood what that meant.'},
+  ];
+  mut(d[i].stats);
+  addLog(15,d[i].log);
+  G.daActive=true;
+  G.good++;
+  G._ftUsed=[];
+  freeTime('phaseOWLs',5);
+}
+
+function phaseOWLs(){
+  page('Year Five — June','Ordinary Wizarding Levels',
+    `${prog(5,8)}
+    <p class="prose">Five years of learning, compressed into a fortnight of examinations. Hermione had been preparing for approximately three years. Ron had been preparing since Easter. Harry had been preparing since the week before.</p>
+    ${ch([
+      'You revised seriously — not Hermione-seriously, but seriously enough. The DA had taught you more Defence than you realised. You did well in Charms and Defence especially.',
+      'You revised with Hermione for two weeks straight. It was both effective and slightly exhausting. Your Potions grade was probably a surprise for Snape.',
+      'You relied on your practical skills. Theory had never been your strongest point and you knew it. You did well in anything involving actual wand work.',
+      'You crammed. Two days of each subject. It worked for about half of them, which was honestly better than expected.',
+    ],'chooseOWLs','How does Harry approach the OWLs?')}`)
+}
+
+function chooseOWLs(i){
+  const d=[
+    {stats:{academic:10,magic:8},log:'OWLs: revised properly. DA work counted. Strong marks in Defence and Charms.'},
+    {stats:{academic:15,hermione:8,magic:8},log:'OWLs: Hermione-style revision for two weeks. Even Potions went well.'},
+    {stats:{magic:12,academic:6,quidditch:4},log:'OWLs: practical skills carried you. The wand-based subjects were strong.'},
+    {stats:{academic:8,cunning:5,magic:6},log:'OWLs: crammed. Better than expected for half. Worse than expected for the rest.'},
+  ];
+  mut(d[i].stats);
+  addLog(15,d[i].log);
+  // OWL Grades
+  G.owlGrades={Defence:'O',Charms:i<2?'E':'A',Transfig:'E',Potions:i===1?'E':'A',Herbology:'A',Astronomy:'A'};
+  phaseDepartmentOfMysteries();
+}
+
+function phaseDepartmentOfMysteries(){
+  page('Year Five — June','The Department of Mysteries',
+    `${prog(6,8)}
+    <p class="prose">The dream. Sirius captured. The corridor, the door, the room full of prophecy orbs. You went — of course you went — six of you through the Floo network and into the Ministry, and you were wrong about nearly everything.</p>
+    <p class="prose">The prophecy. The Death Eaters. The battle through the Department of Mysteries. And then: Bellatrix. Sirius. The veil.</p>
+    ${dlg('Sirius Black — the last moment','"Nice one, James!" He was laughing, fighting, and then the stunner hit and he went through the veil and the veil was still and he was gone.')}
+    ${ch([
+      'You ran at the veil. Lupin caught you. "There\'s nothing you can do. He\'s gone, Harry."',
+      'You chased Bellatrix. The grief and the rage were indistinguishable. You tried to use the Cruciatus Curse and couldn\'t do it properly and were glad later.',
+      'You stood at the veil for a long moment, very still, and then turned around and went back to the others. The grief would come. You held it until there was time.',
+      'You heard Neville\'s voice behind you and turned. The others needed you. Sirius would have agreed with that logic.',
+    ],'chooseSirius','What does Harry do?')}`)
+}
+
+function chooseSirius(i){
+  const d=[
+    {stats:{courage:12,loyalty:10,sirius:0},log:'Year 5, the veil: Lupin caught you. "He\'s gone." The truth of it arrived slowly over the following weeks.'},
+    {stats:{courage:14,cunning:4,magic:6},log:'Year 5: chased Bellatrix. Tried Cruciatus. Couldn\'t do it fully. Were glad later.'},
+    {stats:{wisdom:10,loyalty:12,courage:10},log:'Year 5: stood at the veil. Turned around. Went back to the others. Held it.'},
+    {stats:{loyalty:14,courage:10,neville:8},log:'Year 5: heard Neville. Turned. The others needed you. Sirius would have agreed.'},
+  ];
+  mut(d[i].stats);
+  addLog(15,d[i].log);
+  G.rel.sirius=-100; // Gone
+  G.good++;
+  phaseYear5End();
+}
+
+function phaseYear5End(){
+  page('Year Five — End of Year','Dumbledore\'s office. The truth.',
+    `${prog(7,8)}
+    <p class="prose">Dumbledore told you about the prophecy. <em>Neither can live while the other survives.</em> The words landed with the specific weight of things that have always been true, that you have somehow known without knowing.</p>
+    ${dlg('Professor Dumbledore','"I am not afraid of the truth, Harry. But I should have been less afraid of it earlier, and I should have told you. I am sorry."')}
+    ${ch([
+      '"I\'m angry." You said it. He received it without flinching. "I know." "I\'m angry that you didn\'t tell me. I\'m angry about Sirius. I\'m angry about all of it."',
+      '"Why didn\'t you just tell me?" The simplest version of the question. He answered it honestly.',
+      'You didn\'t say anything for a long time. Then: "What do I do with this?" He had an answer. He had been working on it since you were born.',
+      '"I\'d have been better prepared." He knew this. He said so. It was not nothing.',
+    ],'chooseYear5End','How does Harry respond to Dumbledore?')}`)
+}
+
+function chooseYear5End(i){
+  const d=[
+    {stats:{courage:12,wisdom:8,dumbledore:5},log:'End of Year 5: told Dumbledore you were angry. He listened. It didn\'t undo anything. It helped anyway.'},
+    {stats:{wisdom:10,dumbledore:8},log:'End of Year 5: asked why. He answered. The answer was honest and too late.'},
+    {stats:{wisdom:12,dumbledore:10,courage:8},log:'End of Year 5: "What do I do with this?" He had been thinking about it longer than you had. He told you.'},
+    {stats:{wisdom:8,dumbledore:6,courage:10},log:'End of Year 5: told him you\'d have been better prepared. He said yes. That acknowledgement mattered.'},
+  ];
+  mut(d[i].stats);
+  addLog(15,d[i].log);
+  startYear6();
+}
+
+/* ===== YEAR SIX ===== */
+function startYear6(){
+  G.year=6;G.age=16;G._ftUsed=[];
+  page('Year Six — Autumn','The Half-Blood Prince',
+    `${hud()}
+    ${prog(0,7)}
+    <p class="prose">Sixth year. A new Potions teacher — Professor Slughorn, rubicund and acquisitive, with a habit of collecting talented students like stamps. A used Potions textbook full of someone else\'s handwriting. <em>This copy is the property of the Half-Blood Prince.</em></p>
+    <p class="prose">The annotations were extraordinary. Spells invented from scratch. Potion modifications that consistently out-performed Hermione's method. And one, in the corner of a dark page: <em>Sectumsempra — for enemies.</em></p>
+    ${ch([
+      'You use the book\'s methods without trying to identify who wrote them. The marks are good. The knowledge is real. You\'ll figure out the author later.',
+      'You start trying to identify the handwriting immediately. Something about unknown expertise makes you uncomfortable. You want to know the source.',
+      'You use the Potions annotations freely and keep the defensive spells for study only — to understand them, not use them without knowing their full function.',
+      'You show Hermione the book. She is disapproving in a way that is almost certainly correct. You use it anyway.',
+    ],'chooseHBP','How does Harry use the Half-Blood Prince\'s textbook?')}`)
+}
+
+function chooseHBP(i){
+  const d=[
+    {stats:{academic:12,magic:8,cunning:6},log:'Year 6: used the book\'s methods. Best Potions marks since Year One.'},
+    {stats:{wisdom:10,academic:10,cunning:8},log:'Year 6: used the book and investigated the author simultaneously. Eventually figured it out.'},
+    {stats:{wisdom:12,academic:10,magic:5},log:'Year 6: used Potions annotations, studied the spells cautiously. Responsible use.'},
+    {stats:{hermione:8,academic:10,cunning:5},log:'Year 6: showed Hermione. She disapproved. You used it anyway. Potions: Excellent.'},
+  ];
+  mut(d[i].stats);
+  addLog(16,d[i].log);
+  phaseGinnyYear6();
+}
+
+function phaseGinnyYear6(){
+  page('Year Six — Spring','Ginny Weasley',
+    `${prog(2,7)}
+    ${relPanel(['ginny','ron','hermione'])}
+    <p class="prose">Something had been clarifying since the World Cup, through the DA, through the year — a specific gravitational awareness of Ginny Weasley that had no business being new but was. She was funny and brave and there was something about the way she looked at you that had nothing deferential in it.</p>
+    <p class="prose">After Gryffindor won the Quidditch Cup, in the ecstatic noise of the common room, she kissed you.</p>
+    <p class="prose">Or: you kissed her. You were not entirely clear on the sequence afterward.</p>
+    ${ch([
+      'You kissed her back. Everything else — Ron\'s potential reaction, the common room full of people — narrowed to this one point.',
+      'You looked at her for a moment first — a moment that was long enough to be a question and to receive an answer — and then you kissed her.',
+      'You had been thinking about it for months and when it happened you were absolutely unprepared for how simple it felt.',
+      'You pulled back just enough to say her name before kissing her. It felt important to say it.',
+    ],'chooseGinny','What happens in that moment?')}`)
+}
+
+function chooseGinny(i){
+  const d=[
+    {stats:{ginny:22,loyalty:10,courage:12},log:'Year 6: Ginny kissed you in the common room. You kissed her back. Ron processed this with varying success.'},
+    {stats:{ginny:24,wisdom:8,courage:10},log:'Year 6: a question and an answer and then a kiss. Ron looked at you for a moment and then looked away.'},
+    {stats:{ginny:20,courage:12,wisdom:6},log:'Year 6: months of awareness and then it was simple. It is often simple, when it finally happens.'},
+    {stats:{ginny:25,loyalty:12,courage:8},log:'Year 6: said her name first. She seemed to like that.'},
+  ];
+  mut(d[i].stats);
+  addLog(16,d[i].log);
+  G.romance='ginny';
+  G.romanceLevel=cl(G.romanceLevel+20,0,100);
+  notify('💗 Harry and Ginny!');
+  G._ftUsed=[];
+  freeTime('phaseDumbledoreHorcruxes',6);
+}
+
+function phaseDumbledoreHorcruxes(){
+  page('Year Six — The Horcruxes','Private lessons with Dumbledore',
+    `${prog(4,7)}
+    <p class="prose">Dumbledore's private lessons. Not spells — memories. Tom Riddle\'s past assembled in the Pensieve: a boy in an orphanage, a boy who had always known he was different, a boy who had turned difference into dominion. And then: the Horcruxes.</p>
+    ${dlg('Professor Dumbledore','"Tom Riddle has divided his soul into seven pieces. Six Horcruxes, and himself. While they exist, he cannot die. We must find them and destroy them. All of them." A pause. "You understand what this means."')}
+    ${ch([
+      '"I understand." You didn\'t say anything else. The weight of it was too large for qualifications.',
+      '"How many have already been destroyed?" Getting the operational picture. Dumbledore\'s expression said: good question.',
+      '"We start with what we know. Tom Riddle\'s ring. The diary. What\'s next?" You were always better with tasks than abstractions.',
+      '"I\'ll find them all. I\'ll destroy all of them." Dumbledore looked at you for a moment and then said: "I believe you."',
+    ],'chooseHorcruxes','How does Harry respond to the revelation?')}`)
+}
+
+function chooseHorcruxes(i){
+  const d=[
+    {stats:{courage:14,wisdom:10},log:'Year 6, Horcruxes: understood. Said so. Let the weight be the weight.'},
+    {stats:{wisdom:14,cunning:8,courage:10},log:'Year 6, Horcruxes: got the operational picture. Two destroyed already.'},
+    {stats:{courage:12,wisdom:8,cunning:10},log:'Year 6, Horcruxes: task-focused. What\'s next. Dumbledore approved.'},
+    {stats:{courage:16,loyalty:12},log:'Year 6, Horcruxes: said you\'d find them all. Dumbledore believed you. The believing mattered.'},
+  ];
+  mut(d[i].stats);
+  addLog(16,d[i].log);
+  G.horcruxes=2;
+  phaseDumbledoreDeath();
+}
+
+function phaseDumbledoreDeath(){
+  page('Year Six — The Tower','Dumbledore',
+    `${prog(5,7)}
+    <p class="prose">The Astronomy Tower. The Dark Mark over Hogwarts. Dumbledore, weakened from the cave, asking you to fetch Snape. Draco Malfoy appearing from the shadows with a wand, trying to do the thing he had been assigned.</p>
+    <p class="prose">Draco was shaking. The wand trembled. He was not going to do it.</p>
+    ${dlg('Professor Dumbledore','"Draco, Draco, you are not a killer. I know what you were asked to do. You do not have to do it."')}
+    <p class="prose">Snape arrived. The other Death Eaters arrived. And then it was over.</p>
+    ${ch([
+      'You were paralysed by a spell, unable to move, watching everything. You could not act. You could not stop it. The helplessness was specific and complete.',
+      'You heard every word. You filed them. Draco shaking. Dumbledore\'s certainty. Snape\'s face. You did not understand yet but you kept everything.',
+      'You could not move but you watched Dumbledore and understood that he was not afraid, and that helped you, later, be less afraid yourself.',
+      'You kept Draco\'s face in your memory. The shaking. The failure to be what Voldemort needed him to be. You kept that too.',
+    ],'chooseTower','What stays with Harry?')}`)
+}
+
+function chooseTower(i){
+  const d=[
+    {stats:{courage:6,wisdom:10},log:'Year 6, the Tower: paralysed. Watched. Could not act. The helplessness stayed.'},
+    {stats:{wisdom:14,cunning:8},log:'Year 6, the Tower: filed everything. Draco shaking. Dumbledore\'s certainty. Snape\'s expression. Used later.'},
+    {stats:{courage:12,wisdom:10},log:'Year 6, the Tower: Dumbledore wasn\'t afraid. That helped you be less afraid, later.'},
+    {stats:{wisdom:10,draco:10,cunning:6},log:'Year 6, the Tower: kept Draco\'s face. He had failed to become what Voldemort needed. That was not nothing.'},
+  ];
+  mut(d[i].stats);
+  addLog(16,d[i].log);
+  G.good++;
+  phaseYear6End();
+}
+
+function phaseYear6End(){
+  page('Year Six — End of Year','The funeral. Ginny.',
+    `${prog(6,7)}
+    ${relPanel(['ron','hermione','ginny','draco','snape'])}
+    <p class="prose">The funeral at the lakeside. The whole school there. The chairs. The merpeople rising for a moment from the lake, something Harry had not expected and would not forget. The white marble tomb.</p>
+    <p class="prose">After: Ginny. You had to tell her what you had decided. What had to happen next. That she could not come with you. The conversation was the worst one you had in a year full of them.</p>
+    ${dlg('Ginny Weasley','"I know," she said. "I know you have to go. I know it\'s not — " She looked at you steadily. "Just come back."')}
+    ${ch([
+      '"I will come back." You meant it as both a promise and a commitment you would spend the following year working to keep.',
+      'You held her hand for a long moment before you said anything. You wanted to remember the weight of it.',
+      '"I love you." You hadn\'t said it before. The timing was objectively poor. It felt like exactly the right moment.',
+      '"I\'m going to end this. Then I\'m coming back." The cleanest form of the true thing.',
+    ],'chooseYear6End','What does Harry say to Ginny?')}`)
+}
+
+function chooseYear6End(i){
+  const d=[
+    {stats:{loyalty:16,ginny:15,courage:12},log:'End of Year 6: promised to come back. Meant it in the way that shapes everything that follows.'},
+    {stats:{ginny:18,loyalty:14,courage:10},log:'End of Year 6: held her hand. Memorised the weight. Told her you were coming back.'},
+    {stats:{ginny:22,loyalty:14,romance:10},log:'End of Year 6: said "I love you" for the first time. The timing was awful and exactly right.'},
+    {stats:{courage:14,ginny:16,loyalty:12},log:'End of Year 6: "I\'m going to end this. Then I\'m coming back." She knew you meant both.'},
+  ];
+  mut(d[i].stats);
+  addLog(16,d[i].log);
+  G.romanceLevel=cl(G.romanceLevel+20,0,100);
+  G.housePoints+=0;
+  startYear7();
+}
+
+/* ===== YEAR SEVEN ===== */
+function startYear7(){
+  G.year=7;G.age=17;G._ftUsed=[];
+  page('Year Seven — The Horcrux Hunt','On the run',
+    `${hud()}
+    ${prog(0,7)}
+    <p class="prose">Not Hogwarts. A tent. The countryside of Britain in rotation. The locket Horcrux around someone's neck at all times, poisoning the mood of the tent with a cold that wasn\'t temperature. Ron had the locket on too much. Ron left.</p>
+    <p class="prose">The tent felt very small with two people in it instead of three. Hermione kept working. You kept working. Both of you did not talk about the absence in the corner.</p>
+    ${dlg('Hermione Granger','"He\'ll come back. You know he will." A pause. "Won\'t he?"')}
+    ${ch([
+      '"Yes. He will." You believed this. You held onto it like you held onto the Patronus memory — as fact, not hope.',
+      '"I don\'t know." Honest. Hermione looked at you. Then she went back to her maps. Honesty was sometimes the most you could offer.',
+      '"He always comes back." You had history for this. Year four. Various Quidditch disasters. Ron comes back.',
+      '"He\'s angry at himself more than at me. Give him time." You had thought about this carefully. Ron\'s anger was always mostly at Ron.',
+    ],'chooseRonGone','What does Harry say?')}`)
+}
+
+function chooseRonGone(i){
+  const d=[
+    {stats:{courage:10,loyalty:14,ron:5},log:'Year 7: Ron left. You told Hermione he\'d come back. You believed it.'},
+    {stats:{wisdom:12,hermione:8,loyalty:8},log:'Year 7: Ron left. Said you didn\'t know. Hermione went back to her maps.'},
+    {stats:{loyalty:12,wisdom:8,ron:8},log:'Year 7: Ron left. Cited history. "He always comes back." You were right.'},
+    {stats:{wisdom:14,cunning:8,ron:10},log:'Year 7: Ron left. Identified the real source of his anger. Waited.'},
+  ];
+  mut(d[i].stats);
+  addLog(17,d[i].log);
+  G._ftUsed=[];
+  freeTime('phaseHorcruxProgress',7);
+}
+
+function phaseHorcruxProgress(){
+  page('Year Seven — The Hunt','Progress',
+    `${prog(2,7)}
+    ${relPanel(['ron','hermione','ginny','neville','luna'])}
+    <p class="prose">Ron came back. He destroyed the locket Horcrux — his moment, his fear, his doing. You were glad it was him. He had needed it.</p>
+    <p class="prose">The Sword of Gryffindor. Godric\'s Hollow (the house, the graves, your parents\' names). Malfoy Manor. Dobby.</p>
+    <div class="dialogue"><span class="speaker">Dobby</span>"Harry Potter. Such a long way to come."</div>
+    <p class="prose">Dobby died at Shell Cottage. In the garden. You dug his grave yourself — no magic. Your hands in the earth. A small grave with a stone you chose. <em>Here lies Dobby, a free elf.</em></p>
+    ${ch([
+      'You dug the grave and you understood, with your hands in the earth, that some things cannot be solved, only honoured.',
+      'You chose the stone carefully. The words mattered. <em>A free elf</em> — not servant, not property, not the thing he was. What he became.',
+      'You dug and you thought about Dobby warning you in Year Two, and freeing him with a sock, and every time in between. All of it a friendship.',
+      'You wept while you dug and were not ashamed of it. Ron and Hermione stood nearby. They did not say anything. That was correct.',
+    ],'chooseDobbyGrave','What is this moment for Harry?')}`)
+}
+
+function chooseDobbyGrave(i){
+  const d=[
+    {stats:{wisdom:14,loyalty:10,magic:5},good:1,log:'Year 7: dug Dobby\'s grave by hand. Understood, with hands in the earth, that some things can only be honoured.'},
+    {stats:{loyalty:12,wisdom:12},good:1,log:'Year 7: chose Dobby\'s stone. "A free elf." The words mattered. He had been one.'},
+    {stats:{loyalty:16,wisdom:8,dobby:0},good:1,log:'Year 7: dug and thought of everything since Year Two. All of it a friendship. He died free.'},
+    {stats:{loyalty:12,courage:8},good:1,log:'Year 7: wept while digging. Ron and Hermione stood nearby. Said nothing. That was right.'},
+  ];
+  mut(d[i].stats);
+  addLog(17,d[i].log);
+  G.good+=(d[i].good||0);
+  G.horcruxes=5;
+  phaseBreakingIn();
+}
+
+function phaseBreakingIn(){
+  page('Year Seven — Gringotts & The Return','Breaking in, breaking out, coming back',
+    `${prog(3,7)}
+    <p class="prose">Gringotts. The vault. A Horcrux retrieved. A dragon ridden out through the ceiling in a departure that you acknowledged was not subtle. Then: Voldemort knew. He knew you were hunting Horcruxes.</p>
+    <p class="prose">The remaining ones had to be found immediately. And you knew one of them was at Hogwarts.</p>
+    <p class="prose">You came back. Neville Longbottom, Seamus Finnigan, the DA — they had held Hogwarts' resistance for a year, quietly, at considerable personal cost.</p>
+    ${dlg('Neville Longbottom','"Harry. We — we weren\'t sure you were coming. But we kept — we kept it going. We thought it was what you\'d want."')}
+    ${ch([
+      '"It\'s exactly what I\'d want. Thank you. What you did here — it mattered." You meant all of it.',
+      'You gripped Neville\'s shoulder and couldn\'t quite speak for a moment. He had become something extraordinary while you were gone.',
+      '"You kept it alive. That\'s everything." You looked at the state of him — the healing cuts, the careful eyes — and understood what the year had cost.',
+      '"I\'m here now. We finish it tonight." Neville straightened. The DA reformed around you in minutes.',
+    ],'chooseReturn','What does Harry say to Neville?')}`)
+}
+
+function chooseReturn(i){
+  const d=[
+    {stats:{neville:18,loyalty:16,courage:12},log:'Year 7 return: told Neville it mattered. He had become extraordinary while you were gone.'},
+    {stats:{neville:20,loyalty:14},log:'Year 7 return: gripped his shoulder. Couldn\'t speak. He understood.'},
+    {stats:{neville:16,loyalty:12,wisdom:8},log:'Year 7 return: "You kept it alive. That\'s everything." He had paid for it.'},
+    {stats:{neville:14,courage:16,loyalty:12},log:'Year 7 return: "We finish it tonight." Neville straightened. The DA reformed.'},
+  ];
+  mut(d[i].stats);
+  addLog(17,d[i].log);
+  phaseRoomOfRequirement();
+}
+
+function phaseRoomOfRequirement(){
+  page('Year Seven — The Room of Requirement','The Diadem',
+    `${prog(4,7)}
+    <p class="prose">The Room of Requirement, seventh floor, full of centuries of lost things. The Diadem of Ravenclaw was somewhere in there. The Fiendfyre Draco Malfoy\'s cronies started did not care about the distinction between important and unimportant.</p>
+    <p class="prose">The fire was coming. Draco Malfoy was on a broom that was going down. He had tried to hand you to Voldemort twice. He had stood in the Astronomy Tower and pointed a wand at you. He was about to die, and not at Voldemort\'s hands.</p>
+    ${ch([
+      'You went back for him. Ron and Hermione followed without being asked. You grabbed him. You did not think about whether he deserved it.',
+      '"Ron." One word. Ron understood. You both went. You pulled Draco out with one hand and his crony with the other.',
+      'You turned the broom around before you thought about it. The instinct to save a person, even this person, was deeper than the accounting.',
+      '"Harry, don\'t—" Hermione\'s face said she knew you were going anyway. You went anyway.',
+    ],'chooseDraco','What does Harry do?')}`)
+}
+
+function chooseDraco(i){
+  const d=[
+    {stats:{courage:18,loyalty:16,draco:20},good:1,log:'Year 7: went back for Draco. No accounting. He was a person who was about to die.'},
+    {stats:{courage:16,ron:10,loyalty:14,draco:18},good:1,log:'Year 7: one word to Ron. You both went. Pulled Draco out.'},
+    {stats:{courage:20,draco:16,loyalty:12},good:1,log:'Year 7: turned before thinking. The instinct to save ran deeper than the ledger.'},
+    {stats:{courage:16,hermione:8,draco:14,loyalty:12},good:1,log:'Year 7: Hermione knew you were going anyway. You went.'},
+  ];
+  mut(d[i].stats);
+  addLog(17,d[i].log);
+  G.good+=(d[i].good||0);
+  G.horcruxes=6;
+  phaseWalkIntoTheForest();
+}
+
+function phaseWalkIntoTheForest(){
+  page('Year Seven — The Forbidden Forest','The last Horcrux',
+    `${prog(5,7)}
+    <p class="prose">The Resurrection Stone. Your parents. Sirius. Lupin. Tonks. A circle of light in the dark forest.</p>
+    ${dlg('Lily Potter','"You\'ve been so brave, sweetheart."')}
+    ${dlg('James Potter','"You\'re nearly there. You\'re doing so well."')}
+    <p class="prose">You walked toward Voldemort. You let him kill you. Not because you had no choice — you had calculated the choice, and understood it, and chose it fully. The Horcrux that had lived in you since you were a baby had to die. You were the only way.</p>
+    ${ch([
+      'You thought of Ginny. The morning after. Coming back. It helped you walk forward.',
+      'You thought of Ron and Hermione. They would be all right. That was enough. That was more than enough.',
+      'You dropped the Stone before the edge of the clearing. Your parents\' faces faded. You walked in alone. That was how it had to be.',
+      'You thought of Dumbledore. "You have been loved," he had said. You walked toward the clearing understanding what that meant.',
+    ],'chooseForest','What carries Harry into the forest?')}`)
+}
+
+function chooseForest(i){
+  const d=[
+    {stats:{courage:20,ginny:10,loyalty:16},good:2,log:'Year 7, the forest: thought of Ginny. Coming back. Walked forward.'},
+    {stats:{courage:18,ron:10,hermione:10,loyalty:18},good:2,log:'Year 7, the forest: thought of Ron and Hermione. "They\'ll be all right." Walked forward.'},
+    {stats:{courage:16,wisdom:14,loyalty:12},good:2,log:'Year 7, the forest: dropped the Stone. Walked in alone. That was how it had to be.'},
+    {stats:{courage:18,wisdom:12,loyalty:14,dumbledore:8},good:2,log:'Year 7, the forest: thought of Dumbledore. "You have been loved." Walked forward understanding it.'},
+  ];
+  mut(d[i].stats);
+  addLog(17,d[i].log);
+  G.good+=(d[i].good||0);
+  phaseBattle();
+}
+
+function phaseBattle(){
+  page('Year Seven — The Battle of Hogwarts','The last stand',
+    `${prog(6,7)}
+    ${relPanel(['ron','hermione','neville','ginny','luna','fred','draco'])}
+    <p class="prose">You came back. Voldemort announced your death. Neville pulled the sword from the Sorting Hat and killed Nagini — the last Horcrux — while the Death Eaters celebrated.</p>
+    <p class="prose">Fred Weasley died. Lupin died. Tonks died. Fifty others. The list of names you would carry.</p>
+    <p class="prose">And then: the Great Hall. Voldemort. The Elder Wand.</p>
+    ${dlg('Lord Voldemort','"Harry Potter is dead! Do you understand? Your saviour is DEAD!"')}
+    <p class="prose">You stepped out of Neville\'s cloak. The room had exactly one second to be very still.</p>
+    ${ch([
+      '"Tom Riddle." You used his real name. He flinched. "Let\'s end this."',
+      '"You\'re too late. The last Horcrux is dead. You\'re already mortal." Let him understand what had happened.',
+      '"You never understood love. That\'s why you lost. Then. Now. Always." You looked at him and meant it.',
+      '"Try it again. The Killing Curse. See what happens when you try to kill someone who died for them." Gestured at the hall.',
+    ],'chooseFinalDuel','Harry\'s final words to Voldemort:')}`)
+}
+
+function chooseFinalDuel(i){
+  const d=[
+    {stats:{courage:22,wisdom:10,magic:12},log:'The last duel: "Tom Riddle." The real name. He flinched. EXPELLIARMUS.'},
+    {stats:{courage:18,wisdom:14,magic:12},log:'The last duel: told him the truth about what had already happened. EXPELLIARMUS.'},
+    {stats:{courage:20,wisdom:12,loyalty:10,magic:12},log:'The last duel: "You never understood love." He never did. EXPELLIARMUS.'},
+    {stats:{courage:18,wisdom:10,loyalty:14,magic:12},log:'The last duel: offered him the full understanding of why it was already over. EXPELLIARMUS.'},
+  ];
+  mut(d[i].stats);
+  addLog(17,d[i].log);
+  G.good+=3;
+  G.horcruxes=7;
+  phaseVictory();
+}
+
+function phaseVictory(){
+  page('Year Seven — The Ending','After',
+    `<p class="prose">The Elder Wand flew out of Voldemort's hand. His own Killing Curse rebounded and killed him — finally, completely, the last Horcrux destroyed, nowhere to go, the soul fragment returned to nothing.</p>
+    <p class="prose">The silence that followed was the loudest thing you had ever heard.</p>
+    <p class="prose">Then: noise. Ron and Hermione. Mrs Weasley. Ginny running toward you through the crowd and you catching her and holding on. Hagrid crying somewhere in the middle distance. The castle, damaged but standing, the morning light coming through holes in the walls.</p>
+    ${dlg('Ron Weasley','"Oi. You\'re alive." He looked you up and down. "You absolute—" He hugged you instead of finishing the sentence.')}
+    ${ch([
+      'You held Ginny for a long time. Long enough that people around you understood this was a reunion and gave you the space for it.',
+      'You sat down on the floor of the Great Hall because your legs stopped working, and Ron and Hermione sat down beside you, and nobody spoke for a while.',
+      'You went to find Neville immediately. You needed to say what had to be said about what he\'d done.',
+      'You went to tell George about Fred. There was no right way to do it. You did it anyway because someone who loved Fred had to.',
+    ],'chooseVictory','What does Harry do in the first minutes after?')}`)
+}
+
+function chooseVictory(i){
+  const d=[
+    {stats:{ginny:15,loyalty:14,romance:15},good:1,log:'After the battle: held Ginny. Long enough for people to understand. The morning came through the broken walls.'},
+    {stats:{ron:15,hermione:12,loyalty:16},good:1,log:'After the battle: sat down. Ron and Hermione sat beside you. No one spoke for a while.'},
+    {stats:{neville:20,loyalty:14,courage:8},good:1,log:'After the battle: found Neville first. Said what needed to be said.'},
+    {stats:{fred:0,george:15,loyalty:16,courage:14},good:1,log:'After the battle: went to tell George about Fred. No right way. You did it anyway.'},
+  ];
+  mut(d[i].stats);
+  addLog(17,d[i].log);
+  G.good+=(d[i].good||0);
+  phaseEpilogue();
+}
+
+/* ===== EPILOGUE ===== */
+function phaseEpilogue(){
+  G.age=37;
+  page('Epilogue — Nineteen Years Later','King\'s Cross. Platform Nine and Three-Quarters.',
+    `<p class="prose">The steam. The scarlet engine. Your three children — James Sirius, Albus Severus, Lily Luna — at the edge of the platform. Ginny beside you, her hair in the autumn light. The same platform. A different kind of heart.</p>
+    ${dlg('Albus Potter','"Dad? What if I\'m put in Slytherin?"')}
+    ${ch([
+      '"Then Slytherin will have someone brave and kind in it, which it could use." He looked uncertain. "The hat takes your choice into account."',
+      '"Then you\'ll be the best Slytherin since Merlin." He laughed despite himself.',
+      '"Albus Severus. You were named for two headmasters of Hogwarts. One of them was a Slytherin. He was probably the bravest man I ever knew." He went quiet.',
+      '"The bravest man I ever knew was a Slytherin. If you end up there, you\'re in good company." He held onto that.',
+    ],'chooseEpilogue','What does Harry say to Albus?')}`)
+}
+
+function chooseEpilogue(i){
+  const d=[
+    {stats:{wisdom:10,loyalty:8},log:'Nineteen years later: "The hat takes your choice." Albus boarded the train looking less afraid.'},
+    {stats:{courage:8,loyalty:8},log:'Nineteen years later: made Albus laugh. He boarded the train.'},
+    {stats:{wisdom:14,loyalty:10,courage:8},log:'Nineteen years later: told Albus about Severus Snape. He went quiet. He understood.'},
+    {stats:{wisdom:12,courage:8,loyalty:10},log:'Nineteen years later: "In good company." Albus held onto that.'},
+  ];
+  mut(d[i].stats);
+  addLog(37,d[i].log);
+  G.good++;
+  phaseFinalScore();
+}
+
+function phaseFinalScore(){
+  const s=G.stats;
+  const total=Object.values(s).reduce((a,b)=>a+b,0);
+  const score=cl(Math.round(total/8+G.good*2.5+G.romanceLevel*0.3+G.quidditchWins*2),0,100);
+  const spellBonus=G.spells.length*2;
+  const finalScore=cl(score+spellBonus,0,100);
+
+  const titles=[
+    [95,'The Chosen One — a name that became a truth rather than a prophecy'],
+    [85,'A legend of the wizarding world. The Boy Who Lived, and lived well.'],
+    [75,'One of the finest wizards of his generation. The scar was never the whole story.'],
+    [63,'A good and brave wizard who gave more than he was asked for.'],
+    [50,'A survivor who found his way through the darkness to something worth protecting.'],
+    [0,'Someone who got through it. That is not nothing. That is, in fact, quite a lot.'],
+  ];
+  const title=titles.find(([min])=>finalScore>=min)[1];
+
+  const relSummary=Object.entries({
+    'Ron Weasley':G.rel.ron,'Hermione Granger':G.rel.hermione,
+    'Ginny Weasley':G.rel.ginny,'Neville Longbottom':G.rel.neville,
+    'Hagrid':G.rel.hagrid,'Dobby':G.rel.dobby,
+  }).map(([n,v])=>`<div class="log-entry"><span class="log-age" style="min-width:140px">${n}</span><span>${relHeart(v)}</span></div>`).join('');
+
+  render(`<div class="page">
+    <div class="eyebrow">The End</div>
+    <div class="title">The Life of Harry James Potter</div>
+
+    <div class="score-ring">
+      <span class="score-num">${finalScore}</span>
+      <p class="score-title italic">${title}</p>
+      <span class="badge badge-gryf" style="font-size:12px">Gryffindor · Class of 1998</span>
+      ${G.romance?`<span class="badge" style="background:#5a1a2a;color:#ffb0c0;margin-left:6px">♥ Married Ginny Weasley</span>`:''}
+    </div>
+
+    <p class="prose">The entry in <em>Hogwarts: A History,</em> revised edition, runs to twenty-two pages. They got the scar right. They got the eyes — <em>green, his mother's green</em> — right. They got the wand right: <em>holly, phoenix feather, eleven inches, nice and supple.</em></p>
+    <p class="prose">What they did not entirely capture was the particular way he listened to people, the way he never seemed to know when he was being brave, the way he was always slightly late to understand that people loved him and then seemed genuinely surprised by it each time.</p>
+    <p class="prose">He named his children for the people who had cost him the most. He wore the scar for eighty years and never called it a mark of suffering.</p>
+    <p class="prose italic" style="text-align:center;color:var(--gold)">"The scar had not pained Harry for nineteen years. All was well."</p>
+
+    <hr class="divider">
+
+    <div class="hud" style="margin-bottom:1rem">${statBars()}</div>
+
+    <div class="eyebrow" style="margin-bottom:.5rem">Relationships</div>
+    <div class="log-panel" style="margin-bottom:1rem">
+      <div class="log-header">People Harry loved</div>
+      ${relSummary}
+    </div>
+
+    <div class="log-panel" style="margin-bottom:1rem">
+      <div class="log-header">Spells known (${G.spells.length})</div>
+      <div style="padding:.75rem;display:flex;flex-wrap:wrap;gap:5px">${G.spells.map(s=>`<span class="spell">${s}</span>`).join('')}</div>
+    </div>
+
+    ${logPanel(20)}
+
+    <button class="btn btn-wide" onclick="restartGame()">✦ Live another life ✦</button>
+  </div>`);
+}
+
+function restartGame(){
+  initGame();
+  phaseIntro();
+}
+
+/* ===== START ===== */
+initGame();
+phaseIntro();
+</script>
+</body>
+</html>
