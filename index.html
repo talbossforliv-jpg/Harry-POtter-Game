@@ -415,26 +415,132 @@ body{
   .page{padding:1.5rem 1.1rem}
 }
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
-/* CHARACTER PORTRAIT STYLES */
-.char-portrait-wrap{display:flex;align-items:flex-start;gap:1rem;margin:.6rem 0;padding:.75rem;background:linear-gradient(135deg,rgba(15,8,4,.9),rgba(26,14,8,.8));border:1px solid #3a2010;border-radius:8px;position:relative;overflow:hidden}
-.char-portrait-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(201,151,42,.06),transparent 70%);pointer-events:none}
-.char-canvas-wrap{flex-shrink:0;border-radius:6px;overflow:hidden;border:1px solid #3a2010;box-shadow:0 4px 20px rgba(0,0,0,.6);position:relative}
-.char-canvas-wrap canvas{display:block}
-.char-info{flex:1;min-width:0}
-.char-name-plate{font-family:'Cinzel',serif;font-size:13px;font-weight:600;color:var(--gold2);letter-spacing:.06em;margin-bottom:.2rem}
-.char-role{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:#7a5a30;margin-bottom:.5rem}
-.char-speech{font-size:14px;line-height:1.85;color:var(--parch);font-style:italic;background:rgba(0,0,0,.25);border-left:2px solid var(--gold);padding:.4rem .65rem;border-radius:0 3px 3px 0}
-.char-stats-mini{display:flex;gap:.3rem;flex-wrap:wrap;margin-top:.45rem}
-.csm-badge{font-family:'Cinzel',serif;font-size:9px;padding:2px 7px;border-radius:10px;letter-spacing:.04em}
-/* Floating name animation */
-@keyframes nameFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
-.char-name-plate{animation:nameFloat 3s ease-in-out infinite}
-/* Spell effect overlay */
-.spell-flash-overlay{position:fixed;inset:0;pointer-events:none;z-index:9990;opacity:0;transition:opacity .1s}
-.spell-flash-overlay.active{animation:flashAnim .4s ease forwards}
-@keyframes flashAnim{0%{opacity:0;background:radial-gradient(circle,rgba(255,255,255,.4),transparent)}30%{opacity:1}100%{opacity:0}}
+/* ── HP THEMED DIALOGUE ── */
+.dlg{
+  background:linear-gradient(135deg,#1a0e06,#120a04);
+  border:1px solid #3a2010;border-left:3px solid var(--gold);
+  border-radius:0 6px 6px 0;padding:.8rem 1rem .8rem 1.1rem;
+  margin:.8rem 0;position:relative;overflow:hidden;
+}
+.dlg::before{
+  content:'';position:absolute;top:0;left:0;bottom:0;width:40px;
+  background:linear-gradient(90deg,rgba(201,151,42,.08),transparent);
+  pointer-events:none;
+}
+.dlg-speaker{
+  display:flex;align-items:center;gap:.6rem;margin-bottom:.45rem;
+}
+.dlg-crest{font-size:22px;flex-shrink:0;filter:drop-shadow(0 0 4px rgba(201,151,42,.4))}
+.dlg-name-block{}
+.dlg-name{font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold2);display:block}
+.dlg-role{font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:.08em;color:#6a4a28;display:block;margin-top:1px}
+.dlg-text{font-size:15px;line-height:1.9;color:#e8d8b8;font-style:italic;padding-left:1.8rem}
+
+/* ── LOCKED / UNLOCKED PATHS ── */
+.choices-header{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#6a4a28;margin:.8rem 0 .3rem;display:flex;align-items:center;gap:.5rem}
+.choices-header::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,#3a2010,transparent)}
+.choice{
+  background:linear-gradient(135deg,#1a0e06,#120a04);
+  border:1px solid #3a2010;border-radius:4px;
+  padding:.65rem 1rem .65rem .85rem;
+  font-family:'EB Garamond',serif;font-size:14.5px;
+  color:#d8c8a8;cursor:pointer;text-align:left;
+  line-height:1.6;transition:all .18s;width:100%;
+  position:relative;overflow:hidden;
+}
+.choice::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:0;
+  background:linear-gradient(90deg,rgba(201,151,42,.1),transparent);
+  transition:width .3s;
+}
+.choice:hover{border-color:var(--gold);color:#f0e0c0}
+.choice:hover::before{width:100%}
+.choice-key{
+  font-family:'Cinzel',serif;font-size:9px;font-weight:700;
+  color:var(--gold);display:block;margin-bottom:3px;letter-spacing:.06em;
+}
+.choice small{display:block;font-size:11.5px;color:#7a5a38;margin-top:3px;font-style:italic}
+
+/* LOCKED choices */
+.choice.locked{
+  opacity:.45;cursor:not-allowed;
+  border-color:#2a1808;
+  background:linear-gradient(135deg,#0d0804,#0a0604);
+}
+.choice.locked:hover{border-color:#2a1808;color:#6a5040}
+.choice.locked::before{display:none}
+.lock-icon{float:right;font-size:14px;margin-top:1px;opacity:.6}
+.lock-reason{font-size:11px;color:#5a3820;display:block;margin-top:3px;font-style:italic}
+
+/* UNLOCKED bonus indicator */
+.choice.unlocked-bonus{border-color:#3a2800}
+.choice.unlocked-bonus::after{
+  content:'★ UNLOCKED';position:absolute;right:.65rem;top:.5rem;
+  font-family:'Cinzel',serif;font-size:8px;color:var(--gold);
+  letter-spacing:.08em;opacity:.8;
+}
+
+/* PATH FORK INDICATOR */
+.path-fork{
+  background:linear-gradient(135deg,#120a04,#0d0802);
+  border:1px solid #3a2010;border-radius:6px;padding:.7rem .9rem;
+  margin:.5rem 0;display:flex;align-items:flex-start;gap:.65rem;
+}
+.path-fork-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.path-fork-text{font-size:12.5px;color:#a08050;line-height:1.55;font-style:italic}
+.path-fork-text strong{color:var(--gold2);font-style:normal;font-weight:600}
+
+/* STAT REQUIREMENT BADGE */
+.req-badge{
+  display:inline-block;font-family:'Cinzel',serif;font-size:9px;
+  padding:2px 7px;border-radius:10px;border:1px solid #3a2010;
+  background:#0d0804;color:#8a6040;margin-left:.4rem;vertical-align:middle;
+}
+.req-badge.met{border-color:#3a6020;color:#70a040;background:#0a1204}
+.req-badge.unmet{border-color:#3a1010;color:#a04040;background:#120404}
+
+/* HP THEMED PAGE */
+.page{
+  background:linear-gradient(158deg,#f7f2e6 0%,#ede5ce 50%,#e5d8ba 100%);
+  border:1px solid #b8a070;border-radius:4px;
+  padding:1.75rem 1.6rem;margin-bottom:.8rem;
+  position:relative;overflow:hidden;
+  box-shadow:0 6px 40px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.4);
+  animation:pIn .3s ease;
+}
+@keyframes pIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* Parchment texture lines */
+.page::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(transparent,transparent 27px,rgba(180,150,80,.08) 28px);
+  pointer-events:none;
+}
+/* Gold top border */
+.page::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,transparent,#c9972a 30%,#f5d070 50%,#c9972a 70%,transparent);
+}
+/* Corner ornaments */
+.page-inner{position:relative;z-index:1}
+.corner-ornament{position:absolute;font-size:18px;opacity:.25;pointer-events:none;color:#8a6020}
+.corner-ornament.tl{top:10px;left:10px}
+.corner-ornament.tr{top:10px;right:10px}
+.corner-ornament.bl{bottom:10px;left:10px}
+.corner-ornament.br{bottom:10px;right:10px}
+
+/* HUD parchment-dark hybrid */
+.hud{
+  background:linear-gradient(135deg,#0d0806,#160a04);
+  border:1px solid #3a2010;border-radius:5px;
+  padding:.85rem 1.1rem;margin-bottom:.8rem;
+  box-shadow:0 2px 20px rgba(0,0,0,.5),inset 0 0 0 1px rgba(201,151,42,.04);
+}
+
+/* Spell flash effect */
+.spell-flash{position:fixed;inset:0;pointer-events:none;z-index:9990;
+  animation:sFlash .35s ease forwards;background:radial-gradient(circle at 50% 40%,rgba(255,240,180,.15),transparent 70%)}
+@keyframes sFlash{0%{opacity:0}30%{opacity:1}100%{opacity:0}}
 </style>
 <body>
 
@@ -490,370 +596,54 @@ const SFX={
 };
 
 /* ══════════════════════════════════════════════════════
-   3D CHARACTER PORTRAIT SYSTEM (Three.js)
+   CHARACTER DATA — HP THEMED DIALOGUE
 ══════════════════════════════════════════════════════ */
-const CHAR_DATA={
-  'Harry Potter':{
-    role:'The Boy Who Lived · Gryffindor',
-    skin:0xf4c89a,hair:0x1a1208,robe1:0x8b1a1a,robe2:0xc9972a,
-    eyeColor:0x1a6a1a,scarColor:0xc04040,glasses:true,scar:true,
-    badges:['🦁 Gryffindor','⚡ The Chosen One'],
-    animSpeed:1.2,
-  },
-  'Hagrid':{
-    role:'Keeper of Keys · Groundskeeper',
-    skin:0xc8956a,hair:0x3d2010,robe1:0x2d1a08,robe2:0x4a3020,
-    eyeColor:0x3a2010,glasses:false,scar:false,big:true,
-    badges:['🏚️ Groundskeeper','🐉 Creature Lover'],
-    animSpeed:0.7,
-  },
-  'Professor Dumbledore':{
-    role:'Headmaster · Order of Merlin',
-    skin:0xf0e0c8,hair:0xf0f0f0,robe1:0x4a2a7a,robe2:0xc9972a,
-    eyeColor:0x3a5aaa,glasses:true,scar:false,
-    badges:['🧙 Headmaster','✨ Greatest Wizard'],
-    animSpeed:0.8,
-  },
-  'Professor Snape':{
-    role:'Potions Master · Head of Slytherin',
-    skin:0xe8d8c0,hair:0x100c08,robe1:0x0d0d0d,robe2:0x1a1a1a,
-    eyeColor:0x1a1a1a,glasses:false,scar:false,
-    badges:['🐍 Slytherin','🧪 Potions Master'],
-    animSpeed:0.6,
-  },
-  'Ron Weasley':{
-    role:'Best Friend · Gryffindor',
-    skin:0xf8d0a0,hair:0xc04a10,robe1:0x8b1a1a,robe2:0xc9972a,
-    eyeColor:0x3a6a1a,glasses:false,scar:false,freckles:true,
-    badges:['🦁 Gryffindor','♟️ Chess Champion'],
-    animSpeed:1.0,
-  },
-  'Hermione Granger':{
-    role:'Brightest Witch of Her Age · Gryffindor',
-    skin:0xf4c890,hair:0x5a3010,robe1:0x8b1a1a,robe2:0xc9972a,
-    eyeColor:0x4a2a10,glasses:false,scar:false,bushyHair:true,
-    badges:['🦁 Gryffindor','📚 Head Girl'],
-    animSpeed:1.1,
-  },
-  'Professor Quirrell':{
-    role:'Defence Against Dark Arts · ??? ',
-    skin:0xe0c8a8,hair:0x4a3010,robe1:0x3a3a1a,robe2:0x5a5a2a,
-    eyeColor:0xaa2020,glasses:false,scar:false,turban:true,
-    badges:['🌀 Suspicious','🐍 Occupied'],
-    animSpeed:0.9,
-  },
-  'Lord Voldemort':{
-    role:'The Dark Lord · He Who Must Not Be Named',
-    skin:0xe8e8e0,hair:0x000000,robe1:0x080808,robe2:0x1a1a1a,
-    eyeColor:0xcc0000,glasses:false,scar:false,noNose:true,
-    badges:['💀 Dark Lord','🐍 Parseltongue'],
-    animSpeed:0.5,
-  },
-  'Sirius Black':{
-    role:'Godfather · Animagus · Marauder',
-    skin:0xd8b888,hair:0x180e08,robe1:0x1a1a2a,robe2:0x3a3a5a,
-    eyeColor:0x2a2a6a,glasses:false,scar:false,
-    badges:['🐾 Padfoot','🌟 Order Member'],
-    animSpeed:1.3,
-  },
-  'Professor Lupin':{
-    role:'Defence Against Dark Arts · Marauder',
-    skin:0xd0b888,hair:0x6a5a30,robe1:0x3a2a10,robe2:0x5a4a20,
-    eyeColor:0x5a4a20,glasses:false,scar:false,
-    badges:['🐺 Moony','📖 Best DADA Teacher'],
-    animSpeed:0.9,
-  },
-  'Draco Malfoy':{
-    role:'Slytherin · Death Eater\'s Son',
-    skin:0xf0e8d8,hair:0xf0f0e0,robe1:0x1a2a1a,robe2:0xc0c0c0,
-    eyeColor:0x8888aa,glasses:false,scar:false,
-    badges:['🐍 Slytherin','👑 Malfoy Heir'],
-    animSpeed:1.1,
-  },
-  'Ginny Weasley':{
-    role:'Gryffindor · Future Mrs Potter',
-    skin:0xf8c898,hair:0xb83a10,robe1:0x8b1a1a,robe2:0xc9972a,
-    eyeColor:0x3a6a1a,glasses:false,scar:false,
-    badges:['🦁 Gryffindor','💗 Weasley'],
-    animSpeed:1.2,
-  },
-  'Neville Longbottom':{
-    role:'Gryffindor · Herbology Prodigy',
-    skin:0xf4c898,hair:0x3a2010,robe1:0x8b1a1a,robe2:0xc9972a,
-    eyeColor:0x3a5a1a,glasses:false,scar:false,round:true,
-    badges:['🦁 Gryffindor','🌿 Herbology'],
-    animSpeed:0.9,
-  },
-  'Bellatrix Lestrange':{
-    role:'Death Eater · Azkaban Escapee',
-    skin:0xc8a878,hair:0x100808,robe1:0x0a0808,robe2:0x1a1010,
-    eyeColor:0x8a1a1a,glasses:false,scar:false,wild:true,
-    badges:['💀 Death Eater','🌑 Azkaban Vet'],
-    animSpeed:1.8,
-  },
-  'Peter Pettigrew':{
-    role:'Wormtail · Traitor · Animagus',
-    skin:0xe8d0a8,hair:0x8a7a50,robe1:0x3a3020,robe2:0x4a4030,
-    eyeColor:0xaa8820,glasses:false,scar:false,
-    badges:['🐀 Scabbers','💀 Traitor'],
-    animSpeed:1.5,
-  },
-  'Tom Riddle\'s Memory':{
-    role:'Sixteen · The Diary · Heir of Slytherin',
-    skin:0xe0d8c8,hair:0x100808,robe1:0x0a1a0a,robe2:0x1a3a1a,
-    eyeColor:0x2a2a6a,glasses:false,scar:false,
-    badges:['📔 Memory','🐍 Heir of Slytherin'],
-    animSpeed:0.7,
-  },
+const CHARS={
+  'Harry Potter':       {crest:'⚡',role:'The Boy Who Lived · Gryffindor',house:'gryf'},
+  'Ron Weasley':        {crest:'🎮',role:'Best Friend · Gryffindor',house:'gryf'},
+  'Hermione Granger':   {crest:'📚',role:'Brightest Witch of Her Age · Gryffindor',house:'gryf'},
+  'Hagrid':             {crest:'🌲',role:'Keeper of Keys · Hogwarts Groundskeeper',house:'none'},
+  'Professor Dumbledore':{crest:'✨',role:'Headmaster · Order of Merlin, First Class',house:'none'},
+  'Professor Snape':    {crest:'🧪',role:'Potions Master · Head of Slytherin',house:'slyth'},
+  'Professor Lupin':    {crest:'📖',role:'Defence Against the Dark Arts · Marauder',house:'gryf'},
+  'Professor McGonagall':{crest:'🦁',role:'Deputy Headmistress · Head of Gryffindor',house:'gryf'},
+  'Professor Quirrell': {crest:'🌀',role:'Defence Against the Dark Arts · Year One',house:'none'},
+  'Professor Slughorn': {crest:'🐌',role:'Potions Master · Head of Slug Club',house:'slyth'},
+  'Lord Voldemort':     {crest:'💀',role:'The Dark Lord · He Who Must Not Be Named',house:'dark'},
+  'Tom Riddle's Memory':{crest:'📔',role:'Sixteen Years Old · Heir of Slytherin',house:'dark'},
+  'Sirius Black':       {crest:'🐾',role:'Godfather · Animagus · Order of the Phoenix',house:'gryf'},
+  'Draco Malfoy':       {crest:'🐍',role:'Slytherin · Son of Lucius Malfoy',house:'slyth'},
+  'Neville Longbottom': {crest:'🌿',role:'Gryffindor · Herbology Prodigy',house:'gryf'},
+  'Ginny Weasley':      {crest:'💐',role:'Gryffindor · Weasley Youngest',house:'gryf'},
+  'Luna Lovegood':      {crest:'🌙',role:'Ravenclaw · Seer · Thestrals Believer',house:'raven'},
+  'Cho Chang':          {crest:'🌸',role:'Ravenclaw Seeker · Prefect',house:'raven'},
+  'Cedric Diggory':     {crest:'⚜️',role:'Hufflepuff Champion · Triwizard',house:'huff'},
+  'Dobby':              {crest:'🧦',role:'Free Elf · Friend',house:'none'},
+  'Peter Pettigrew':    {crest:'🐀',role:'Wormtail · Traitor · Animagus',house:'none'},
+  'Bellatrix Lestrange':{crest:'🌑',role:'Death Eater · Azkaban Escapee',house:'dark'},
+  'Lucius Malfoy':      {crest:'🦅',role:'Death Eater · Malfoy Patriarch',house:'dark'},
+  'Lily Potter':        {crest:'🌹',role:'Harry's Mother · Her Love Lives On',house:'gryf'},
+  'James Potter':       {crest:'🦌',role:'Harry's Father · Prongs · Marauder',house:'gryf'},
+  'The Sorting Hat':    {crest:'🎩',role:'Enchanted Artifact · Arbiter of Houses',house:'none'},
+  'Mr Ollivander':      {crest:'🪄',role:'Wandmaker · Ollivanders Since 382 B.C.',house:'none'},
 };
+const HOUSE_COLORS={gryf:'#8b1a1a',slyth:'#1a4a2e',raven:'#1a2a4a',huff:'#5a4a00',dark:'#2a0a4a',none:'#3a2810'};
 
-const _3D={renderers:{},scenes:{},cameras:{},animations:{}};
-
-function build3DChar(canvasId,charName,size=100){
-  if(!window.THREE)return;
-  const cd=CHAR_DATA[charName];if(!cd)return;
-  const canvas=document.getElementById(canvasId);if(!canvas)return;
-
-  // Clean up previous renderer for this canvas
-  if(_3D.renderers[canvasId]){
-    _3D.renderers[canvasId].dispose();
-    cancelAnimationFrame(_3D.animations[canvasId]);
-  }
-
-  const W=size,H=size+20;
-  canvas.width=W;canvas.height=H;
-
-  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
-  renderer.setSize(W,H);renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
-  renderer.shadowMap.enabled=true;
-  renderer.setClearColor(0x000000,0);
-
-  const scene=new THREE.Scene();
-  const camera=new THREE.PerspectiveCamera(45,W/H,0.1,100);
-  camera.position.set(0,1.2,4.5);camera.lookAt(0,.8,0);
-
-  // Lighting
-  const ambient=new THREE.AmbientLight(0xfff8e8,.6);scene.add(ambient);
-  const key=new THREE.DirectionalLight(0xffe8c8,1.2);key.position.set(2,3,2);key.castShadow=true;scene.add(key);
-  const fill=new THREE.DirectionalLight(0xc8d8ff,.4);fill.position.set(-2,1,1);scene.add(fill);
-  const rim=new THREE.DirectionalLight(0xffd070,.3);rim.position.set(0,2,-2);scene.add(rim);
-
-  const M=THREE.MeshLambertMaterial;
-  const G3=THREE.SphereGeometry;
-  const CG=THREE.CylinderGeometry;
-  const BG=THREE.BoxGeometry;
-  const group=new THREE.Group();
-  scene.add(group);
-
-  const scale=cd.big?1.25:1.0;
-  group.scale.set(scale,scale,scale);
-
-  // BODY (robe)
-  const bodyGeo=new CG(.38,.42,1.1,8);
-  const bodyMat=new M({color:cd.robe1});
-  const body=new THREE.Mesh(bodyGeo,bodyMat);
-  body.position.y=.15;group.add(body);
-
-  // Robe trim/collar
-  const collarGeo=new CG(.39,.39,.18,8);
-  const collarMat=new M({color:cd.robe2});
-  const collar=new THREE.Mesh(collarGeo,collarMat);
-  collar.position.y=.65;group.add(collar);
-
-  // Arms
-  for(const side of[-1,1]){
-    const armGeo=new CG(.1,.12,.75,6);
-    const arm=new THREE.Mesh(armGeo,new M({color:cd.robe1}));
-    arm.position.set(side*.52,.25,0);arm.rotation.z=side*.35;
-    group.add(arm);
-    // Hand
-    const hand=new THREE.Mesh(new G3(.11,6,4),new M({color:cd.skin}));
-    hand.position.set(side*.65,-.12,0);group.add(hand);
-  }
-
-  // Neck
-  const neck=new THREE.Mesh(new CG(.11,.11,.18,6),new M({color:cd.skin}));
-  neck.position.y=.76;group.add(neck);
-
-  // HEAD
-  const headGeo=cd.big?new G3(.38,10,8):new G3(.33,10,8);
-  const headMat=new M({color:cd.skin});
-  const head=new THREE.Mesh(headGeo,headMat);
-  head.position.y=1.12;group.add(head);
-
-  // HAIR
-  function addHair(){
-    if(cd.noNose){
-      // Voldemort — bald/smooth
-      const capGeo=new G3(.34,6,4,0,Math.PI*2,0,Math.PI*.5);
-      const cap=new THREE.Mesh(capGeo,new M({color:0xe0e0d8}));
-      cap.position.y=1.12;group.add(cap);
-      return;
-    }
-    const hairColor=new M({color:cd.hair});
-    // Top cap
-    const cap=new THREE.Mesh(new G3(cd.bushyHair?.42:.36,6,4,0,Math.PI*2,0,Math.PI*.55),hairColor);
-    cap.position.y=1.12;group.add(cap);
-    // Back
-    const back=new THREE.Mesh(new CG(cd.bushyHair?.28:.2,cd.bushyHair?.26:.18,.3,6),hairColor);
-    back.position.set(0,1.0,-.22);group.add(back);
-    if(cd.bushyHair){
-      // Extra poof sides
-      for(const s of[-1,1]){
-        const side=new THREE.Mesh(new G3(.2,5,4),hairColor);
-        side.position.set(s*.3,1.08,-.05);group.add(side);
-      }
-    }
-    // Fringe / front
-    const fringe=new THREE.Mesh(new G3(cd.bushyHair?.2:.16,5,4,0,Math.PI*2,0,Math.PI*.4),hairColor);
-    fringe.position.set(0,1.35,.24);group.add(fringe);
-  }
-  addHair();
-
-  // EYES
-  for(const [sx,sy] of[[-1,0],[1,0]]){
-    const white=new THREE.Mesh(new G3(.055,5,4),new M({color:0xffffff}));
-    white.position.set(sx*.13,1.14+sy*.0,.28);group.add(white);
-    const iris=new THREE.Mesh(new G3(.035,5,4),new M({color:cd.eyeColor}));
-    iris.position.set(sx*.13,1.14,.31);group.add(iris);
-    const pupil=new THREE.Mesh(new G3(.018,4,3),new M({color:0x050505}));
-    pupil.position.set(sx*.13,1.14,.33);group.add(pupil);
-  }
-
-  // NOSE
-  if(!cd.noNose){
-    const nose=new THREE.Mesh(new G3(.045,4,3),new M({color:cd.skin*0.96}));
-    nose.position.set(0,1.08,.33);group.add(nose);
-  } else {
-    // Two slits for Voldemort
-    for(const s of[-1,1]){
-      const slit=new THREE.Mesh(new BG(.03,.025,.04),new M({color:0xb8b0a0}));
-      slit.position.set(s*.05,1.10,.32);group.add(slit);
-    }
-  }
-
-  // MOUTH
-  const mouthGeo=new BG(.1,.025,.04);
-  const mouth=new THREE.Mesh(mouthGeo,new M({color:0xb06060}));
-  mouth.position.set(0,1.0,.31);group.add(mouth);
-
-  // GLASSES (Harry, Dumbledore)
-  if(cd.glasses){
-    const gMat=new M({color:0x2a1a10});
-    for(const sx of[-1,1]){
-      const frame=new THREE.Mesh(new THREE.TorusGeometry(.07,.008,6,12),gMat);
-      frame.position.set(sx*.14,1.135,.3);group.add(frame);
-      const lens=new THREE.Mesh(new THREE.CircleGeometry(.06,10),new M({color:0x88aabb,transparent:true,opacity:.3}));
-      lens.position.set(sx*.14,1.135,.295);group.add(lens);
-    }
-    // Bridge
-    const bridge=new THREE.Mesh(new BG(.06,.008,.008),gMat);
-    bridge.position.set(0,1.135,.3);group.add(bridge);
-  }
-
-  // LIGHTNING SCAR (Harry)
-  if(cd.scar){
-    const scarMat=new M({color:cd.scarColor||0xc04040});
-    const s1=new THREE.Mesh(new BG(.012,.055,.012),scarMat);
-    s1.position.set(.05,1.32,.29);s1.rotation.z=.35;group.add(s1);
-    const s2=new THREE.Mesh(new BG(.012,.04,.012),scarMat);
-    s2.position.set(.065,1.28,.29);s2.rotation.z=-.35;group.add(s2);
-  }
-
-  // TURBAN (Quirrell)
-  if(cd.turban){
-    const t=new THREE.Mesh(new G3(.38,7,4,0,Math.PI*2,0,Math.PI*.52),new M({color:0x7a7a5a}));
-    t.position.y=1.14;group.add(t);
-    const wrap=new THREE.Mesh(new CG(.38,.37,.16,8),new M({color:0x6a6a4a}));
-    wrap.position.y=1.06;group.add(wrap);
-  }
-
-  // BEARD (Dumbledore)
-  if(charName==='Professor Dumbledore'){
-    const bMat=new M({color:0xf0f0f0});
-    const beard=new THREE.Mesh(new CG(.15,.28,.55,6),bMat);
-    beard.position.set(0,.75,.24);beard.rotation.x=.3;group.add(beard);
-    // Moustache
-    for(const s of[-1,1]){
-      const m=new THREE.Mesh(new G3(.08,5,3),bMat);
-      m.position.set(s*.12,1.02,.3);group.add(m);
-    }
-  }
-
-  // BIG BEARD (Hagrid)
-  if(charName==='Hagrid'){
-    const bMat=new M({color:0x2a1408});
-    const beard=new THREE.Mesh(new CG(.35,.5,1.0,7),bMat);
-    beard.position.set(0,.55,.15);beard.rotation.x=.2;group.add(beard);
-    const face=new THREE.Mesh(new G3(.2,6,4),new M({color:0xc8956a}));
-    face.position.set(0,1.0,.3);group.add(face);
-  }
-
-  // WAND (in right hand)
-  if(charName==='Harry Potter'||charName==='Professor Dumbledore'||charName==='Professor Snape'){
-    const wandGeo=new CG(.018,.022,.7,5);
-    const wandMat=new M({color:charName==='Professor Dumbledore'?0xf0e8d0:0x3a2010});
-    const wand=new THREE.Mesh(wandGeo,wandMat);
-    wand.position.set(.7,-.2,.05);wand.rotation.z=-.5;wand.rotation.x=.2;
-    group.add(wand);
-  }
-
-  // Special: Voldemort glowing eyes
-  if(charName==='Lord Voldemort'){
-    const glow=new THREE.PointLight(0xff2020,.8,1.5);
-    glow.position.set(0,1.14,.2);scene.add(glow);
-  }
-
-  // Ground shadow disc
-  const shadow=new THREE.Mesh(new THREE.CircleGeometry(.42,16),new M({color:0x000000,transparent:true,opacity:.25}));
-  shadow.rotation.x=-Math.PI/2;shadow.position.y=-0.52;group.add(shadow);
-
-  // Animate
-  let frame=0;
-  const animSpeed=cd.animSpeed||1;
-  function animate(){
-    _3D.animations[canvasId]=requestAnimationFrame(animate);
-    frame+=0.02*animSpeed;
-    group.rotation.y=Math.sin(frame*.4)*.18;
-    head.position.y=1.12+Math.sin(frame*.7)*.012;
-    if(renderer.domElement.isConnected){renderer.render(scene,camera);}
-    else{cancelAnimationFrame(_3D.animations[canvasId]);renderer.dispose();}
-  }
-  animate();
-  _3D.renderers[canvasId]=renderer;
-}
-
-function charPortrait(charName,speech,size){
-  const cd=CHAR_DATA[charName];
-  const sz=size||90;
-  const id='cp-'+Math.random().toString(36).slice(2,8);
-  const badgeHtml=(cd?.badges||[]).map(b=>`<span class="csm-badge" style="background:rgba(0,0,0,.3);color:#c0a060;border:1px solid #3a2010">${b}</span>`).join('');
-  const html=`<div class="char-portrait-wrap">
-    <div class="char-canvas-wrap" style="width:${sz}px;height:${sz+20}px">
-      <canvas id="${id}" width="${sz}" height="${sz+20}"></canvas>
-    </div>
-    <div class="char-info">
-      <div class="char-name-plate">${charName}</div>
-      <div class="char-role">${cd?.role||''}</div>
-      <div class="char-speech">"${speech}"</div>
-      <div class="char-stats-mini">${badgeHtml}</div>
-    </div>
-  </div>`;
-  // Build model after DOM renders
-  setTimeout(()=>build3DChar(id,charName,sz),60);
-  return html;
-}
-
-// Override dlg() to use portraits for known characters
-const _origDlg=window.dlg||null;
 function dlg(speaker,text){
-  // Strip quotes from text for portrait version
-  const clean=text.replace(/^['"]/,'').replace(/['"]$/,'');
-  if(CHAR_DATA[speaker]){
-    return charPortrait(speaker,clean);
-  }
-  // fallback for unknown speakers
-  return`<div class="dlg"><span class="dlg-name">${speaker}</span>${text}</div>`;
+  const cd=CHARS[speaker];
+  if(!cd)return`<div class="dlg"><span class="dlg-name">${speaker}</span>${text}</div>`;
+  const hc=HOUSE_COLORS[cd.house]||'#3a2010';
+  const clean=text.replace(/^"+|"+$/g,'').replace(/^'+|'+$/g,'');
+  return`<div class="dlg" style="border-left-color:${hc}40;border-left-width:3px">
+    <div class="dlg-speaker">
+      <span class="dlg-crest" style="color:${hc === '#3a2810' ? '#c9972a' : hc}">${cd.crest}</span>
+      <div class="dlg-name-block">
+        <span class="dlg-name" style="color:${hc==='#3a2810'?'var(--gold2)':hc}">${speaker}</span>
+        <span class="dlg-role">${cd.role}</span>
+      </div>
+    </div>
+    <div class="dlg-text">${clean}</div>
+  </div>`;
 }
 const $=id=>document.getElementById(id);
 const app=()=>$('app');
@@ -1086,13 +876,70 @@ function prog(cur,tot){
   return`<div class="prog-bar">${Array.from({length:tot},(_,i)=>`<div class="prog-seg ${i<cur?'prog-done':i===cur?'prog-cur':''}"></div>`).join('')}</div>`;
 }
 function dlg(speaker,text){return`<div class="dlg"><span class="dlg-name">${speaker}</span>${text}</div>`;}
+/* ── LOCKED / UNLOCKED CHOICE SYSTEM ── */
+// Choice format: {text, sub, req:{stat:min}, reqFlag, bonus, lock}
+// OR just a plain string for simple choices
 function ch(arr,fn,q){
-  return`${q?`<div class="q-label">Your Choice</div><p class="q-text">${q}</p>`:''}
-  <div class="choices">${arr.map((c,i)=>`<button class="choice" onclick="${fn}(${i});SFX.click()"><span class="choice-letter">${String.fromCharCode(65+i)}</span>${c}</button>`).join('')}</div>`;
+  const letters='ABCDEFGH';
+  const rows=arr.map((c,i)=>{
+    // Plain string = simple unlocked choice
+    if(typeof c==='string'){
+      const[main,sub]=c.split('|');
+      return`<button class="choice" onclick="${fn}(${i});SFX.click()">
+        <span class="choice-key">${letters[i]}</span>${main}
+        ${sub?`<small>${sub}</small>`:''}
+      </button>`;
+    }
+    // Object = potentially locked choice
+    const{text,sub,req,reqFlag,bonus,lock,bonusFlag}=c;
+    // Check requirements
+    let locked=false;let lockMsg='';
+    if(req){
+      for(const[stat,min]of Object.entries(req)){
+        const cur=(G.stats&&G.stats[stat])||0;
+        if(cur<min){locked=true;lockMsg=`Requires ${stat.charAt(0).toUpperCase()+stat.slice(1)} ${min} (you have ${cur})`;}
+      }
+    }
+    if(reqFlag&&!hasFlag(reqFlag)){locked=true;lockMsg=`Locked — requires a choice made earlier`;}
+    if(lock){locked=true;lockMsg=lock;}
+
+    const isBonus=bonusFlag&&hasFlag(bonusFlag);
+    if(locked){
+      return`<div class="choice locked">
+        <span class="choice-key">${letters[i]} <span class="lock-icon">🔒</span></span>${text}
+        ${sub?`<small style="color:#5a3820">${sub}</small>`:''}
+        <span class="lock-reason">🔒 ${lockMsg}</span>
+      </div>`;
+    }
+    return`<button class="choice ${isBonus?'unlocked-bonus':''}" onclick="${fn}(${i});SFX.click()">
+      <span class="choice-key">${letters[i]}</span>${text}
+      ${sub?`<small>${sub}</small>`:''}
+      ${bonus?`<small style="color:#7a9a40">${bonus}</small>`:''}
+    </button>`;
+  }).join('');
+
+  return`<div class="choices-header">Your Choice</div>
+  ${q?`<p style="font-size:14.5px;color:var(--ink);margin-bottom:.5rem;line-height:1.5;font-weight:500">${q}</p>`:''}
+  <div class="choices">${rows}</div>`;
 }
+
 function pg(eyebrow,title,body){
-  render(`<div class="page"><div class="eyebrow">${eyebrow}</div><div class="title">${title}</div>${body}</div>`);
+  render(`<div class="page">
+    <span class="corner-ornament tl">❧</span>
+    <span class="corner-ornament tr">❧</span>
+    <div class="page-inner">
+      <div class="eyebrow">${eyebrow}</div>
+      <div class="title">${title}</div>
+      ${body}
+    </div>
+    <span class="corner-ornament bl">❧</span>
+    <span class="corner-ornament br">❧</span>
+  </div>`);
   saveGame();checkAchievements();
+}
+
+function pathFork(icon,text){
+  return`<div class="path-fork"><span class="path-fork-icon">${icon}</span><div class="path-fork-text">${text}</div></div>`;
 }
 function logPanel(max){
   if(!G.log.length)return'';
@@ -1630,15 +1477,43 @@ function doFT(key,nextFn,actionsLeft){
 function showMenu(){
   G.phase='menu';
   app().innerHTML=`
-  <div class="menu-screen">
-    <div class="menu-crest">⚡</div>
+  <div class="menu-screen" style="position:relative">
+    <!-- Decorative HP-style divider top -->
+    <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:.35em;color:#3a2810;margin-bottom:1.5rem;text-transform:uppercase">— Hogwarts School of Witchcraft and Wizardry —</div>
+
+    <!-- Wax seal style crest -->
+    <div style="width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,#8b1a1a,#5a0808);border:3px solid #c9972a;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;box-shadow:0 0 30px rgba(139,26,26,.5),0 0 60px rgba(201,151,42,.15);animation:floatY 3s ease-in-out infinite">
+      <span style="font-size:42px;filter:drop-shadow(0 0 8px rgba(201,151,42,.6))">⚡</span>
+    </div>
+
     <div class="menu-logo">Harry Potter</div>
-    <div class="menu-logo" style="font-size:clamp(16px,3vw,24px);margin-top:-.5rem">A Wizarding Life</div>
-    <div class="menu-sub">Your story. Your choices. Your legacy.</div>
-    <button class="menu-btn menu-btn-primary" onclick="startNewGame()">✦ Begin the Story ✦</button>
-    ${hasSave()?`<button class="menu-btn menu-btn-secondary" onclick="continueGame()">↩ Continue Story</button>`:''}
-    <button class="menu-btn menu-btn-secondary" onclick="showAchievementsMenu()">🏆 Achievements</button>
-    <div style="margin-top:2rem;font-size:13px;color:#4a3a30;font-style:italic">Play as Harry Potter through all seven years at Hogwarts.<br>Every choice matters. Every friendship is real.</div>
+    <div style="font-family:'Cinzel',serif;font-size:clamp(12px,2.5vw,17px);color:#8a6840;letter-spacing:.12em;margin:.3rem 0 .2rem">A Wizarding Life</div>
+
+    <!-- HP ornamental divider -->
+    <div style="display:flex;align-items:center;gap:.75rem;width:100%;max-width:320px;margin:.8rem auto 1.8rem">
+      <div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,#5a3820)"></div>
+      <span style="color:#c9972a;font-size:16px">✦</span>
+      <div style="flex:1;height:1px;background:linear-gradient(90deg,#5a3820,transparent)"></div>
+    </div>
+
+    <button class="menu-btn menu-btn-primary" onclick="startNewGame()" style="position:relative;overflow:hidden">
+      <span style="position:relative;z-index:1">✦ Begin the Story ✦</span>
+      <div style="position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.05),transparent);animation:shimmer 2s ease-in-out infinite"></div>
+    </button>
+    ${hasSave()?`<button class="menu-btn menu-btn-secondary" onclick="continueGame()">↩ Continue Your Story</button>`:''}
+    <button class="menu-btn menu-btn-secondary" onclick="showAchievementsMenu()">📜 Records & Achievements</button>
+
+    <!-- House crests -->
+    <div style="display:flex;gap:1.2rem;margin:1.8rem 0 1rem;opacity:.5">
+      <div style="text-align:center"><div style="font-size:22px">🦁</div><div style="font-family:'Cinzel',serif;font-size:7px;letter-spacing:.15em;color:#8b1a1a;margin-top:2px">GRYFFINDOR</div></div>
+      <div style="text-align:center"><div style="font-size:22px">🐍</div><div style="font-family:'Cinzel',serif;font-size:7px;letter-spacing:.15em;color:#1a4a2e;margin-top:2px">SLYTHERIN</div></div>
+      <div style="text-align:center"><div style="font-size:22px">🦅</div><div style="font-family:'Cinzel',serif;font-size:7px;letter-spacing:.15em;color:#1a2a4a;margin-top:2px">RAVENCLAW</div></div>
+      <div style="text-align:center"><div style="font-size:22px">🦡</div><div style="font-family:'Cinzel',serif;font-size:7px;letter-spacing:.15em;color:#5a4a00;margin-top:2px">HUFFLEPUFF</div></div>
+    </div>
+
+    <div style="font-family:'EB Garamond',serif;font-size:13px;color:#3a2a18;font-style:italic;line-height:1.7;max-width:300px;text-align:center">
+      Seven years. Every choice matters.<br>Different paths unlock. Some roads close forever.<br>Spell mastery grows. Friendships are real.
+    </div>
   </div>`;
 }
 
@@ -1799,32 +1674,48 @@ function phaseSorting(){
   G.phase='y1_sorting';
   pg('Year One — The Great Hall','The Sorting Hat',
     `${prog(1,9)}
-    <p class="prose">The Great Hall. Enchanted ceiling mirroring the night sky. A thousand floating candles. Four long tables, each bearing its house colours. At the front — a three-legged stool and a battered pointed hat that had seen better centuries.</p>
-    <p class="prose">The hat opened and sang. Then the names began. One by one. Until:</p>
-    <p class="prose"><em>"Potter, Harry."</em></p>
-    <p class="prose">The entire hall whispered. You sat on the stool. The hat dropped over your eyes. And then it spoke — not in your ears, but somewhere deeper.</p>
-    ${dlg('The Sorting Hat','"Hmm. Difficult. Very difficult. Plenty of courage, I see. Not a bad mind. There\'s talent — oh yes — and a thirst to prove yourself. But where to put you? You could be great in Slytherin — it\'s all here in your head. Slytherin will help you on the way to greatness, there\'s no doubt about that — no?"')}
+    <p class="prose">The Great Hall. Enchanted ceiling mirroring the night sky. Four long tables, each bearing its house colours. At the front — a three-legged stool, and a battered hat that had seen better centuries.</p>
+    <p class="prose"><em>"Potter, Harry."</em> The entire hall whispered. You sat on the stool. The hat dropped over your eyes. It spoke not in your ears, but somewhere deeper.</p>
+    ${dlg('The Sorting Hat','"Hmm. Difficult. Very difficult. Plenty of courage. Not a bad mind. A thirst to prove yourself. But where to put you? You could be great in Slytherin — it\'s all here in your head — no?"')}
+    ${pathFork('🔮','Your stats affect which paths are open. High Cunning or Wisdom may unlock choices others cannot make.')}
     ${ch([
-      '"Not Slytherin." The words come out before you have thought them. The hat pauses. Something shifts.',
-      'You say nothing, but something in you recoils from that word. The hat feels it and is silent.',
-      '"Where do you put someone brave enough to be afraid?" The hat sounds briefly amused.',
-      '"I want to be where my friends are." Ron and Hermione are both heading to Gryffindor. That is enough.',
+      '"Not Slytherin." Before you\'ve thought it. The hat pauses. Something shifts.|→ Gryffindor · +Courage',
+      'You say nothing. The recoil is in you, not in words. The hat reads it perfectly.|→ Gryffindor · +Cunning',
+      {text:'"Perhaps Slytherin, then." You consider it seriously. Power has its own logic.',sub:'→ Still sorted Gryffindor, but Snape treats you differently all year · +Cunning',req:{cunning:28},bonus:'Unlocks: Snape grudging respect path in Years 5–7'},
+      '"Where my friends are going." Ron and Hermione are Gryffindor-bound. That is everything.|→ Gryffindor · +Loyalty ♥♥',
+      {text:'"I want to be sorted on who I will become, not who I am now."',sub:'→ Gryffindor with +Wisdom · Dumbledore notes this later',req:{wisdom:26},bonus:'Unlocks: Dumbledore private conversation in Year 3'},
     ],'chooseSorting','What do you say to the hat?')}`)
 }
 function chooseSorting(i){
   const d=[
-    {stats:{courage:14,loyalty:8},log:'The hat considered Slytherin. "Not Slytherin." It heard you. GRYFFINDOR.'},
-    {stats:{courage:10,wisdom:6},log:'Said nothing but meant it. The hat heard the silence perfectly. GRYFFINDOR.'},
-    {stats:{courage:8,wisdom:12},log:'Asked a question the hat wasn\'t expecting. It appreciated the instinct. GRYFFINDOR.'},
-    {stats:{loyalty:16,courage:6},log:'Chose your friends before you knew your house. The hat approved. GRYFFINDOR.'},
+    {stats:{courage:16,loyalty:8},log:'Hat: "Not Slytherin." It heard. GRYFFINDOR.'},
+    {stats:{courage:10,cunning:8,wisdom:6},log:'Hat: silence was the answer. GRYFFINDOR.'},
+    {stats:{cunning:16,wisdom:8},flag:'considered_slytherin',log:'Hat: you considered it. That consideration will matter to Snape. GRYFFINDOR.',snapeBonus:true},
+    {stats:{loyalty:18,courage:6},log:'Hat: chose friends first. GRYFFINDOR.'},
+    {stats:{wisdom:18,courage:6},flag:'hat_wisdom_answer',log:'Hat: who you will become. Dumbledore heard. GRYFFINDOR.',dumbledoreBonus:true},
   ];
-  mut(d[i].stats);addLog(1,d[i].log);
+  const chosen=d[i];
+  mut(chosen.stats);
+  if(chosen.flag)setFlag(chosen.flag);
+  if(chosen.snapeBonus){
+    G.rel.snape=cl((G.rel.snape||0)+15,-100,100);
+    addEcho('🐍 Sorting — You considered Slytherin. Snape knows. He never fully writes you off as just famous.');
+    notify('🔮 Snape path unlocked...','🐍');
+  }
+  if(chosen.dumbledoreBonus){
+    G.rel.dumbledore=cl((G.rel.dumbledore||0)+12,-100,100);
+    addEcho('✨ Sorting — Your answer impressed Dumbledore. He arranges a private conversation in Year 3.');
+    notify('🔮 Dumbledore path unlocked...','✨');
+  }
+  addLog(1,chosen.log);
   mut({gryf:15,hermione:5,ron:5});
   saveGame();phaseGryffindorReveal();
 }
 
 function phaseGryffindorReveal(){
   render(`<div class="page">
+    <span class="corner-ornament tl">❧</span><span class="corner-ornament tr">❧</span>
+    <div class="page-inner">
     <div class="eyebrow">Year One — The Great Hall</div>
     <div class="title">The Decision</div>
     <div class="reveal-box">
@@ -1832,12 +1723,12 @@ function phaseGryffindorReveal(){
       <span class="reveal-big" style="color:#8b1a1a">GRYFFINDOR!</span>
       <p style="font-family:'Cinzel',serif;font-size:13px;color:#8a7060;margin-top:.5rem;letter-spacing:.08em">WHERE DWELL THE BRAVE AT HEART</p>
     </div>
-    <p class="prose">The Gryffindor table erupted. You walked toward the red and gold — toward the ghost of your parents' house — and sat down among people who were now, in some specific and important sense, yours.</p>
-    <p class="prose">Percy Weasley shook your hand. Fred and George immediately offered you a seat between them.</p>
+    <p class="prose">The Gryffindor table erupted. You walked toward the red and gold. Fred and George immediately offered you a seat between them.</p>
     ${dlg('Fred Weasley','"Don\'t worry,"')}
     ${dlg('George Weasley','"We\'ll look after you."')}
-    <div class="result-box">🦁 Welcome to Gryffindor! Harry finds his home.<br>♥ Fred +10, George +10, Ron +8, Hermione +8</div>
+    <div class="result-box">🦁 Welcome to Gryffindor!</div>
     <button class="btn btn-gold btn-wide" onclick="phaseYear1School()">Begin First Year →</button>
+    </div><span class="corner-ornament bl">❧</span><span class="corner-ornament br">❧</span>
   </div>`);
   mut({fred:10,george:10,ron:8,hermione:8,gryf:10});SFX.success();
   for(let i=0;i<8;i++)setTimeout(()=>spawnParticle(Math.random()*window.innerWidth,Math.random()*window.innerHeight*.5,'⭐'),i*120);
@@ -2194,23 +2085,33 @@ function chooseBoggart(i){
 function phasePatronusLesson(){
   pg('Year Three — Winter','Learning the Patronus Charm',
     `${hud()}
-    ${dlg('Professor Lupin','"The Patronus is a kind of positive force. A guardian. A projection of the very things that the Dementor feeds on — hope, happiness, the desire to survive. It\'s not simply a spell — it\'s a piece of yourself made visible. The incantation is Expecto Patronum. The requirement is a memory. The happiest you have."')}
+    ${dlg('Professor Lupin','"The Patronus is a guardian — a projection of the very things a Dementor feeds on. Hope. Happiness. The desire to survive. It is not simply a spell — it is a piece of yourself made visible. The incantation: Expecto Patronum. The requirement: a memory. The happiest you have."')}
+    ${pathFork('🌟','The memory you choose shapes how powerful your Patronus is — and unlocks different conversations with Lupin afterward.')}
     ${ch([
-      'Your first flight on the Nimbus. The feeling of air and height and something finally clicking into place.',
-      'Waking up at the Burrow — the warmth, the noise, people moving around each other with the ease of people who always shared a home.',
-      'Ron and Hermione. The troll and the Stone and the chess board. Being worth someone\'s loyalty.',
-      'Your parents\' faces in the Mirror of Erised. You didn\'t know them, but they were proud. You felt it.',
+      'Your first flight on the Nimbus. Air and height and something clicking into place.|+Magic, +Quidditch · Standard power',
+      {text:'Waking up at the Burrow for the first time. Warmth. Noise. People at ease with each other.',sub:'+Magic, +Loyalty · Stronger Patronus',req:{loyalty:35},bonus:'Unlocks: Molly Weasley treats you as hers from this year on'},
+      'Ron and Hermione. The troll, the chess board, the logic puzzle. Being worth someone\'s loyalty.|+Magic ♥, +Loyalty · Good power',
+      {text:'Your parents\' faces in the Mirror of Erised. Pride you felt across a mirror from people you never met.',sub:'+Magic ♥♥ · Strongest Patronus · but Lupin must look away',req:{wisdom:30},bonus:'Unlocks: Lupin tells you something about your father he has never told anyone'},
+      {text:'"I want to cast it using a moment that hasn\'t happened yet." You describe a future you intend to make.',sub:'+Magic ♥♥, +Wisdom · Extraordinary — Lupin has never seen this',req:{wisdom:38,courage:40},bonus:'★ RARE PATH — Unlocks unique Lupin scene in Year 7'},
     ],'choosePatronus','Which memory does Harry use?')}`)
 }
 function choosePatronus(i){
   const d=[
-    {stats:{magic:12,courage:8},log:'Year 3 Patronus: used the first flight. A Stag burst silver from the wand — enormous, certain.'},
-    {stats:{magic:10,loyalty:12},log:'Year 3 Patronus: used the Burrow. A Stag. Lupin looked at it for a very long time.'},
-    {stats:{magic:11,loyalty:14},log:'Year 3 Patronus: used his friends. The Stag came out complete. Lupin was very still.'},
-    {stats:{magic:13,courage:10},log:'Year 3 Patronus: used his parents\' faces. The Stag was enormous. Lupin had to look away.'},
+    {stats:{magic:12,courage:8,quid:5},log:'Patronus: the first flight. A Stag — certain, enormous.'},
+    {stats:{magic:14,loyalty:12},flag:'burrow_patronus',log:'Patronus: the Burrow. A Stag. Lupin stared at it a long time. "I can guess where that came from."',mollyBonus:true},
+    {stats:{magic:13,loyalty:14},log:'Patronus: friends. The Stag came out complete.'},
+    {stats:{magic:16,courage:10},flag:'parents_patronus',log:'Patronus: parents\' faces. The Stag was enormous. Lupin had to look away.',lupinBonus:true},
+    {stats:{magic:18,wisdom:12,courage:8},flag:'future_patronus',log:'Patronus: a future not yet real. Lupin sat down. He had never seen this before.',rareBonus:true},
   ];
-  mut(d[i].stats);addLog(3,d[i].log);learnSpell('Expecto Patronum');
-  G.patronus='Stag';notify('🌟 Patronus Charm mastered — A Stag!','🌟');
+  const ch=d[i];
+  mut(ch.stats);
+  if(ch.flag)setFlag(ch.flag);
+  if(ch.mollyBonus){mut({loyalty:8});addEcho('🏠 Year 3 — Your Patronus memory was the Burrow. Molly Weasley treats you as her own from this year forward.');}
+  if(ch.lupinBonus){mut({lupin:15,wisdom:8});addEcho('🦌 Year 3 — Lupin saw your parents in your Patronus. He told you something about your father he has never told anyone.');}
+  if(ch.rareBonus){mut({lupin:20,wisdom:12});addEcho('⭐ Year 3 — You cast a Patronus from a future memory. Lupin mentioned it only once, years later, to Dumbledore.');unlockAchievement('bookworm');}
+  addLog(3,ch.log);
+  learnSpell('Expecto Patronum');gainXP('Expecto Patronum',25);
+  G.patronus='Stag';notify('🌟 Patronus Charm mastered — A Silver Stag!','🌟');
   addItem('🌟 Patronus: Silver Stag');SFX.success();saveGame();
   G.ftUsed=[];renderFreeTime('phaseYear3ShriekingShack',3);
 }
@@ -2219,13 +2120,14 @@ function phaseYear3ShriekingShack(){
   pg('Year Three — Spring','The Shrieking Shack',
     `${hud()}
     ${relPanel(['ron','hermione','sirius','lupin'])}
-    <p class="prose">Sirius Black. Not what the newspapers said. Peter Pettigrew — your father\'s friend, the real traitor — exposed after twelve years hiding as a rat in Ron\'s pocket. Wormtail wept and pointed at you.</p>
+    <p class="prose">Sirius Black. Not what the newspapers said. Peter Pettigrew — your father's friend, the real traitor — twelve years as a rat in Ron's pocket. Wormtail wept and pointed at you with a hand that was already starting to shake.</p>
     ${dlg('Peter Pettigrew','"Harry — Harry — James\'s son — you look so much like your father — your father would have spared me —"')}
+    ${pathFork('🔮','The mercy or justice you show Pettigrew here creates a debt. In Year 7, that debt comes due — in a way Voldemort does not anticipate.')}
     ${ch([
-      '"My father was betrayed by you. Don\'t speak about him." You lowered your wand. You didn\'t want to be a killer. Sirius and Lupin looked at each other.',
-      '"I\'m not going to kill you. But you\'re facing the Dementors." You meant it.',
-      '"Get up. You\'re going to Dumbledore. My parents\' name might finally be cleared." You said this calmly.',
-      '"You won\'t use my father\'s name." But you let him live. Wrong and right at the same time. Not always opposites.',
+      '"My father was betrayed by you. Don\'t speak about him." You lowered your wand. Refusal to become what you feared.|🕊️ Mercy · CASCADE: Year 7 silver hand hesitates',
+      '"You\'re going to face the Dementors. My parents might get justice." Cold and certain.|⚖️ Justice · Cascade: clears name attempt',
+      {text:'"Look at me." You held his gaze until he stopped shaking. "Tell me everything about that night." You needed the truth first.',sub:'🔍 Truth-seeking · requires Wisdom 35 · unlocks full picture of that Halloween',req:{wisdom:35},bonus:'Unlocks: you learn a detail about your parents\' final night that no one else knows'},
+      '"You won\'t use my father\'s name." You let him live. Two feelings at once. Not always opposites.|Wisdom path · complex mercy',
     ],'choosePettigrew','What does Harry decide?')}`)
 }
 function choosePettigrew(i){
@@ -2422,22 +2324,29 @@ function chooseGrimmauld(i){
 function phaseUmbridge(){
   pg('Year Five — Autumn','Professor Umbridge',
     `${hud()}
-    ${dlg('Professor Umbridge','"Our new educational curriculum will be theory-based. There will be no need to use spells in my classroom." A smile that had never reached her eyes. "I\'m sure you\'ll find it very — " she looked at Harry — "refreshing."')}
+    ${dlg('Professor Umbridge','"Our new educational curriculum will be theory-based. There will be no need to use spells in my classroom." A smile that had never reached her eyes. "I\'m sure you\'ll find it very — " she looked directly at Harry — "refreshing."')}
+    ${pathFork('⚠️','How you handle Umbridge sets your reputation for Year 5. Confront her and students believe you — but detentions stack. Stay silent and gather allies differently.')}
     ${ch([
-      '"Voldemort\'s back. I was there. And you\'re telling us not to prepare for him." Every word measured. The class went silent.',
-      '"He is back." Two words. You did not elaborate. You had learned what elaboration cost.',
-      '"The curriculum seems designed by someone who\'s never met a Dark wizard." Technically true. She couldn\'t quite contradict it.',
-      'You said nothing. You looked at her steadily. The silence was its own statement.',
+      '"Voldemort\'s back. I was there. You\'re telling us not to prepare." Every word measured. The class went silent.|🔴 Detentions +5, but 24 students approach you after class · +Courage ♥♥',
+      '"He is back." Two words. She can\'t quite contradict the pronoun. The class hears it.|Orange path — fewer detentions, same message · +Courage',
+      {text:'"May I ask — what evidence will the practical exam require, given we only cover theory?" Technically valid. She can\'t answer it.',sub:'🟡 No detentions · seeds doubt in Umbridge · +Cunning',req:{cunning:30},bonus:'Unlocks: Hermione says this is the cleverest thing you\'ve done all year'},
+      {text:'"I\'d like to raise a formal educational concern under Decree Twenty-Three." She stares. You have read the Ministry documents.',sub:'🟢 Legal trap · requires Academic 35 · she cannot punish this',req:{academic:35},bonus:'★ Unlocks: Fudge hears about it · ripples into Year 6 Ministry scenes'},
+      'You said nothing. Looked at her steadily. The silence was its own complete statement.|+Cunning, +Wisdom · Slow burn path',
     ],'chooseUmbridge','How does Harry respond?')}`)
 }
 function chooseUmbridge(i){
   const d=[
-    {stats:{courage:16,reputation:8},log:'Year 5, Umbridge: said it directly. Received a week of detentions with the Blood Quill.'},
-    {stats:{courage:14,wisdom:8},log:'Year 5, Umbridge: two words. She gave detentions. The class believed you, individually.'},
-    {stats:{cunning:10,courage:12,wisdom:8},log:'Year 5, Umbridge: technically accurate. She seethed. Detentions anyway.'},
-    {stats:{cunning:12,courage:8,wisdom:10},log:'Year 5, Umbridge: the silence was a statement she couldn\'t answer.'},
+    {stats:{courage:18,loyalty:10},detentions:5,log:'Umbridge: said it directly. Blood Quill detentions. 24 students found you afterward.'},
+    {stats:{courage:14,wisdom:8},detentions:3,log:'Umbridge: two words. She gave detentions. The class believed you individually.'},
+    {stats:{cunning:14,wisdom:8},detentions:0,flag:'clever_umbridge',log:'Umbridge: asked about the practical exam. She had no answer. Hermione was impressed.'},
+    {stats:{academic:14,cunning:12},detentions:0,flag:'legal_umbridge',log:'Umbridge: formal educational concern. She could not punish it. Fudge heard.',fudgeEcho:true},
+    {stats:{cunning:12,wisdom:12},detentions:1,log:'Umbridge: silence. A statement she couldn\'t answer.'},
   ];
-  mut(d[i].stats);addLog(5,d[i].log);G.detentions+=3;saveGame();
+  const ch=d[i];
+  mut(ch.stats);if(ch.flag)setFlag(ch.flag);
+  G.detentions+=(ch.detentions||0);
+  if(ch.fudgeEcho){addEcho('📋 Year 5 — You cited Ministry Decree Twenty-Three against Umbridge. Fudge heard. The Ministry underestimates you differently from this point.');}
+  addLog(5,ch.log);saveGame();
   phaseDAFounding();
 }
 
@@ -2445,26 +2354,33 @@ function phaseDAFounding(){
   pg('Year Five — The Hog\'s Head','Dumbledore\'s Army',
     `${hud()}
     ${relPanel(['ron','hermione','neville','luna','ginny','cho'])}
-    <p class="prose">Hermione organised it. The Hog\'s Head, Hogsmeade, a Saturday. Twenty-nine students from five houses on mismatched chairs, looking at you. You had to convince them it was worth it.</p>
+    <p class="prose">Hermione organised it. Twenty-nine students, five houses, mismatched chairs at the Hog's Head on a Saturday. All of them looking at you. You had to say something that would make them come back next week.</p>
+    ${pathFork('✊','The way you found the DA determines its character — a practical fighting force, a political resistance, or something rarer. All paths lead to Year 7. The shape is different.')}
     ${ch([
-      '"I\'m not going to pretend I\'m better than I am. But I\'ve used real spells in real situations. I can teach you what worked."',
-      '"Voldemort\'s back. That\'s the argument. Any Defence you don\'t have is Defence that can\'t save you."',
-      '"I don\'t want to be the one talking. What do you already know? What do you need?" Make it collaborative.',
-      '"The Ministry doesn\'t want us prepared. That alone should tell you whether we should prepare."',
+      '"I\'ve used real spells in real situations. I can teach you what actually worked. Not theory — what worked."|Practical DA · Neville becomes exceptional',
+      '"Voldemort\'s back. That\'s the whole argument. Any Defence you don\'t have cannot save you."|Direct DA · strong bond · political risk',
+      {text:'"What do you already know? What are the gaps?" Make it a conversation — make it theirs.',sub:'Collaborative DA · members become more creative · Luna\'s ideas surprise everyone',req:{loyalty:40},bonus:'Unlocks: Luna devises a spell variation that saves lives in the Battle'},
+      {text:'"I don\'t want to lead this. But I can\'t watch us be defenceless." Hermione stands up immediately.',sub:'Reluctant leader path · requires Wisdom 38 — they follow harder for the honesty',req:{wisdom:38},bonus:'★ Unlocks: Neville gives a speech in Year 7 that echoes this exact admission'},
+      {text:'"We are the Ministry\'s worst nightmare — students who know what\'s actually happening." Cho starts clapping.',sub:'Political DA — requires Cunning 35 · high risk if discovered',req:{cunning:35},bonus:'Unlocks: political cascade into the Second Wizarding War\'s aftermath'},
     ],'chooseDA','What does Harry say?')}`)
 }
 function chooseDA(i){
   const d=[
-    {rel:{neville:10,luna:5,ginny:8},stats:{courage:10,loyalty:14,magic:8},good:1,log:'DA founding: honest about limits. Offered what was real. They came back every week.'},
-    {rel:{neville:8,ginny:6},stats:{courage:14,loyalty:10,reputation:8},good:1,log:'DA founding: Voldemort\'s back, that\'s the argument. Direct. True.'},
-    {rel:{neville:12,luna:8,ginny:10,hermione:8},stats:{wisdom:12,loyalty:14,magic:8},good:1,log:'DA founding: invited them in. Asked what they needed. A real collaboration.'},
-    {rel:{neville:8},stats:{cunning:10,courage:12,reputation:8},good:1,log:'DA founding: pointed at the Ministry. They understood what that meant.'},
+    {rel:{neville:14,luna:5,ginny:8},stats:{courage:10,loyalty:14,magic:8},good:1,flag:'da_practical',log:'DA founding: practical. What actually worked. They came back every week.'},
+    {rel:{neville:8,ginny:6},stats:{courage:14,loyalty:10},good:1,flag:'da_direct',log:'DA founding: direct. Voldemort\'s back. They understood.'},
+    {rel:{neville:12,luna:14,ginny:10,hermione:8},stats:{wisdom:12,loyalty:16,magic:8},good:1,flag:'da_collab',log:'DA founding: collaborative. Luna\'s ideas turned out to be extraordinary.',lunaBonus:true},
+    {rel:{neville:16,hermione:12},stats:{wisdom:14,loyalty:12},good:1,flag:'da_reluctant',log:'DA founding: honest reluctance. They followed harder for it.',nevilleBonus:true},
+    {rel:{cho:14,neville:8},stats:{cunning:14,courage:10},good:1,flag:'da_political',log:'DA founding: political. The Ministry\'s worst nightmare. High risk.'},
   ];
-  mut(d[i].stats);mut(d[i].rel);G.good+=(d[i].good||0);G.daFounded=true;
-  setFlag('da_founded');
+  const ch=d[i];
+  mut(ch.stats);mut(ch.rel);G.good+=(ch.good||0);
+  if(ch.flag)setFlag(ch.flag);
+  if(ch.lunaBonus){addEcho('🌙 Year 5 — Your collaborative DA meant Luna\'s ideas were heard. In the Battle of Hogwarts, one of them saves three lives.');}
+  if(ch.nevilleBonus){addEcho('✊ Year 5 — You admitted reluctance. Neville carried that into Year 7 — and gave a speech in the Great Hall that echoed it word for word.');}
+  G.daFounded=true;setFlag('da_founded');
   addEcho('✊ Year 5 — You founded the DA. In the Battle of Hogwarts, six DA members who would have died didn\'t — because you taught them what you knew.');
-  notify('🔮 The DA will matter in Year 7...','🔮');
-  unlockAchievement('da_founder');addLog(5,d[i].log);G.ftUsed=[];saveGame();
+  notify('🔮 The DA echoes into Year 7...','🔮');
+  unlockAchievement('da_founder');addLog(5,ch.log);G.ftUsed=[];saveGame();
   renderFreeTime('phaseOWLsExam',3);
 }
 
